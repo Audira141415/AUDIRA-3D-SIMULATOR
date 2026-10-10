@@ -39,12 +39,11 @@ if %errorlevel% neq 0 (
 :: 4. Tentukan pesan commit
 set "COMMIT_MSG=%~1"
 if "!COMMIT_MSG!"=="" (
-    set /p "COMMIT_MSG=Masukkan pesan commit (Tekan Enter untuk default): "
+    set /p "COMMIT_MSG=Masukkan pesan commit [Tekan Enter untuk default]: "
 )
 
 if "!COMMIT_MSG!"=="" (
-    for /f "tokens=1-3 delims=/ " %%a in ("%date%") do set "CURRENT_DATE=%%c-%%a-%%b"
-    set "COMMIT_MSG=feat: update AUDIRA 3D Construction Simulator [!date! !time!]"
+    set "COMMIT_MSG=feat: update AUDIRA 3D Construction Simulator [%date% %time%]"
 )
 
 echo.
@@ -52,7 +51,7 @@ echo [INFO] Pesan commit: "!COMMIT_MSG!"
 echo.
 
 :: 5. Git Stage All Changes
-echo [INFO] Menambahkan berkas ke Git index (git add -A)...
+echo [INFO] Menambahkan berkas ke Git index [git add -A]...
 git add -A
 
 :: 6. Git Commit
@@ -67,12 +66,12 @@ git branch -M main
 
 :: 8. Git Push ke GitHub
 echo.
-echo [INFO] Mengunggah perubahan ke GitHub (origin main)...
+echo [INFO] Mengunggah perubahan ke GitHub [origin main]...
 git push -u origin main
 
 if %errorlevel% neq 0 (
     echo.
-    echo [WARNING] Push langsung gagal. Mencoba sinkronisasi remote (pull --rebase)...
+    echo [WARNING] Push langsung gagal. Mencoba sinkronisasi remote via pull rebase...
     git pull origin main --rebase --allow-unrelated-histories
     echo [INFO] Mencoba push ulang setelah rebase...
     git push -u origin main
@@ -88,7 +87,7 @@ if %errorlevel% equ 0 (
     echo.
     echo ===============================================================================
     echo [ERROR] Gagal melakukan push ke GitHub.
-    echo Pastikan Anda memiliki akses / izin autentikasi ke repositori:
+    echo Pastikan Anda memiliki izin akses ke repositori:
     echo https://github.com/Audira141415/AUDIRA-3D-SIMULATOR
     echo ===============================================================================
 )
