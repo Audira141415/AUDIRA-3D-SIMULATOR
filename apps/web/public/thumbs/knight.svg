@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="armorGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a5b4fc"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#3730a3"/>
+    </linearGradient>
+    <linearGradient id="goldTrim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#854d0e"/>
+    </linearGradient>
+    <linearGradient id="swordBlade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <filter id="neonGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="256" height="256" rx="28" fill="url(#bgGrad)"/>
+  <circle cx="128" cy="115" r="85" fill="#6366f1" opacity="0.15" filter="url(#neonGlow)"/>
+
+  <!-- Glowing Aura / Halo -->
+  <circle cx="128" cy="70" r="32" fill="none" stroke="#818cf8" stroke-width="2" opacity="0.4" stroke-dasharray="4 3"/>
+
+  <!-- Knight Shield (Left arm / Left side) -->
+  <g transform="translate(42, 95)">
+    <!-- Shield Outer -->
+    <path d="M 0 5 Q 26 0 52 5 Q 52 40 40 70 Q 26 95 26 100 Q 26 95 12 70 Q 0 40 0 5 Z" fill="url(#armorGlow)" stroke="url(#goldTrim)" stroke-width="3" filter="url(#neonGlow)"/>
+    <!-- Shield Cross / Emblem -->
+    <path d="M 26 18 L 26 80 M 12 40 L 40 40" stroke="#fef08a" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="26" cy="40" r="4.5" fill="#fbbf24"/>
+  </g>
+
+  <!-- Knight Body / Torso Armor -->
+  <g id="knight-body">
+    <!-- Shoulder Armor (Pauldrons) -->
+    <path d="M 85 92 Q 68 85 62 105 Q 82 120 95 110 Z" fill="url(#armorGlow)" stroke="url(#goldTrim)" stroke-width="2"/>
+    <path d="M 171 92 Q 188 85 194 105 Q 174 120 161 110 Z" fill="url(#armorGlow)" stroke="url(#goldTrim)" stroke-width="2"/>
+
+    <!-- Chestplate -->
+    <path d="M 92 95 Q 128 88 164 95 L 156 160 Q 128 175 100 160 Z" fill="url(#armorGlow)" stroke="url(#goldTrim)" stroke-width="3"/>
+    <!-- Chestplate Rune/Emblem -->
+    <path d="M 128 108 L 128 145 M 115 122 L 141 122" stroke="#38bdf8" stroke-width="2" opacity="0.9"/>
+    <!-- Belt / Tassets -->
+    <rect x="97" y="160" width="62" height="10" rx="3" fill="#1e1b4b" stroke="url(#goldTrim)" stroke-width="2"/>
+    <circle cx="128" cy="165" r="5" fill="#eab308"/>
+    <!-- Skirt Armor Plating -->
+    <path d="M 98 170 L 88 200 L 115 200 L 122 170 Z" fill="#312e81" stroke="#4f46e5" stroke-width="1.5"/>
+    <path d="M 158 170 L 168 200 L 141 200 L 134 170 Z" fill="#312e81" stroke="#4f46e5" stroke-width="1.5"/>
+    <path d="M 118 170 L 115 204 L 141 204 L 138 170 Z" fill="url(#armorGlow)" stroke="url(#goldTrim)" stroke-width="1.5"/>
+
+    <!-- Greaves / Legs -->
+    <rect x="100" y="200" width="22" height="42" rx="4" fill="url(#armorGlow)" stroke="#3730a3" stroke-width="2"/>
+    <rect x="134" y="200" width="22" height="42" rx="4" fill="url(#armorGlow)" stroke="#3730a3" stroke-width="2"/>
+    <!-- Sabatons (Boots) -->
+    <path d="M 96 238 L 122 238 L 124 246 L 90 246 Z" fill="#1e1b4b" stroke="url(#goldTrim)" stroke-width="1.5"/>
+    <path d="M 134 238 L 160 238 L 166 246 L 132 246 Z" fill="#1e1b4b" stroke="url(#goldTrim)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Helmet / Great Helm -->
+  <g id="knight-helm">
+    <!-- Plume / Crest (Red/Purple plume feather) -->
+    <path d="M 128 32 Q 112 10 120 4 Q 138 6 138 32 Z" fill="#ec4899" opacity="0.9"/>
+    <path d="M 128 32 Q 138 14 150 10 Q 152 24 135 34 Z" fill="#f43f5e"/>
+
+    <!-- Helmet Base -->
+    <path d="M 104 55 Q 128 42 152 55 Q 160 85 150 98 Q 128 105 106 98 Q 96 85 104 55 Z" fill="url(#armorGlow)" stroke="url(#goldTrim)" stroke-width="3"/>
+    <!-- Visor Slit / Glowing Blue Eyes -->
+    <rect x="110" y="68" width="36" height="5" rx="2" fill="#020617"/>
+    <rect x="114" y="69" width="12" height="3" rx="1.5" fill="#38bdf8" filter="url(#neonGlow)"/>
+    <rect x="130" y="69" width="12" height="3" rx="1.5" fill="#38bdf8" filter="url(#neonGlow)"/>
+    <!-- Visor Breathe Holes -->
+    <circle cx="122" cy="85" r="1.5" fill="#1e1b4b"/>
+    <circle cx="128" cy="85" r="1.5" fill="#1e1b4b"/>
+    <circle cx="134" cy="85" r="1.5" fill="#1e1b4b"/>
+    <circle cx="125" cy="90" r="1.5" fill="#1e1b4b"/>
+    <circle cx="131" cy="90" r="1.5" fill="#1e1b4b"/>
+  </g>
+
+  <!-- Glowing Greatsword (Right hand / Right side) -->
+  <g transform="translate(182, 50)">
+    <!-- Blade Glow -->
+    <path d="M 14 0 L 22 15 L 20 110 L 8 110 L 6 15 Z" fill="url(#swordBlade)" filter="url(#neonGlow)"/>
+    <!-- Blade Core -->
+    <path d="M 14 2 L 20 16 L 18 108 L 10 108 L 8 16 Z" fill="#e0f2fe"/>
+    <!-- Crossguard -->
+    <rect x="-4" y="108" width="36" height="7" rx="3" fill="url(#goldTrim)" stroke="#854d0e" stroke-width="1.5"/>
+    <circle cx="14" cy="111.5" r="3.5" fill="#38bdf8"/>
+    <!-- Hilt / Grip -->
+    <rect x="10" y="115" width="8" height="22" rx="2" fill="#312e81"/>
+    <!-- Pommel -->
+    <circle cx="14" cy="140" r="5.5" fill="url(#goldTrim)" stroke="#854d0e" stroke-width="1.5"/>
+  </g>
+
+  <!-- Sparkles -->
+  <path d="M 210 35 L 213 43 L 221 46 L 213 49 L 210 57 L 207 49 L 199 46 L 207 43 Z" fill="#38bdf8" opacity="0.8"/>
+  <path d="M 38 60 L 40 66 L 46 68 L 40 70 L 38 76 L 36 70 L 30 68 L 36 66 Z" fill="#fef08a" opacity="0.8"/>
+</svg>

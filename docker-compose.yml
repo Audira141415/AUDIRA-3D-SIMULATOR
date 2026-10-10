@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: audira_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: audira_3d
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: audira_api
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/audira_3d?schema=public"
+      PORT: 3000
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.web
+    container_name: audira_web
+    ports:
+      - '5173:80'
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  pgdata:

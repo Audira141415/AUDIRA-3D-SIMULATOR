@@ -1,0 +1,10 @@
+# Cursor AI Rules - AUDIRA 3D CONSTRUCTION SIMULATOR
+# Always refer to AGENTS.md and .agents/ as the primary source of truth.
+
+You are pair programming on AUDIRA 3D CONSTRUCTION SIMULATOR (3D World Builder + Construction Simulator in Browser).
+Before making any changes or answering architecture questions:
+1. READ AGENTS.md in the root directory.
+2. CONSULT .agents/ARCHITECTURE.md, .agents/PRD.md, .agents/DESIGN.md, .agents/SECURITY.md, .agents/TASK_INSTRUCTION.md, and .agents/TESTING.md.
+3. NEVER delete existing 3D features, transform systems, stores, or undo/redo mechanisms. Always enhance additively.
+4. MAINTAIN 100% 3D browser-based React Three Fiber (R3F) & Three.js stack.
+5. PRESERVE Dark Modern Game Editor styling in apps/web.

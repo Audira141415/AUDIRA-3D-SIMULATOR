@@ -1,0 +1,410 @@
+[
+  {
+    "id": "scania",
+    "label": "Scania",
+    "category": "vehicle",
+    "modelFile": "scania.glb",
+    "targetSize": 6,
+    "url": "/models/scania.glb"
+  },
+  {
+    "id": "tokyo-mater",
+    "label": "Tokyo Mater",
+    "category": "vehicle",
+    "modelFile": "tokyo-mater.glb",
+    "targetSize": 5.5,
+    "url": "/__l5e/assets-v1/8a61d536-dbbd-43e5-ab53-926a1087dbb7/tokyo-mater.glb"
+  },
+  {
+    "id": "lightning",
+    "label": "Lightning McQueen",
+    "category": "vehicle",
+    "modelFile": "lightning-mcqueen.glb",
+    "targetSize": 5.5,
+    "url": "/__l5e/assets-v1/f6e23115-a13f-454a-9295-787dc5fbb023/lightning-mcqueen.glb"
+  },
+  {
+    "id": "volvo-c30",
+    "label": "Volvo C30",
+    "category": "vehicle",
+    "modelFile": "volvo-c30.glb",
+    "targetSize": 5.5,
+    "url": "/__l5e/assets-v1/de97de1f-8ff3-4162-a151-0a5adebd65d0/volvo-c30.glb"
+  },
+  {
+    "id": "scania-bus",
+    "label": "Scania Bus Pack",
+    "category": "vehicle",
+    "modelFile": "scania-bus-pack.glb",
+    "targetSize": 10,
+    "url": "/__l5e/assets-v1/c69cc1bc-7f6a-4b1c-84d7-4981ff6bdcc3/scania-bus-pack.glb"
+  },
+  {
+    "id": "scania-r440",
+    "label": "Scania R440",
+    "category": "vehicle",
+    "modelFile": "scania-r440.glb",
+    "targetSize": 9,
+    "url": "/__l5e/assets-v1/9fabe54b-3edb-488a-89b6-1b5c41e88ec4/scania-r440.glb"
+  },
+  {
+    "id": "police-car",
+    "label": "Police Car",
+    "category": "vehicle",
+    "modelFile": "police-car.glb",
+    "targetSize": 5.5,
+    "url": "/__l5e/assets-v1/86b8a51c-6503-4a70-a82f-8ebdf796af9f/police-car.glb"
+  },
+  {
+    "id": "passenger-pack",
+    "label": "Passenger Car Pack",
+    "category": "vehicle",
+    "modelFile": "passenger-car-pack.glb",
+    "targetSize": 6,
+    "url": "/__l5e/assets-v1/a07533aa-6ca0-4dc7-9be4-7ffa7f9b2538/passenger-car-pack.glb"
+  },
+  {
+    "id": "traffic-pack",
+    "label": "Traffic Vehicle Pack",
+    "category": "vehicle",
+    "modelFile": "traffic-vehicles.glb",
+    "targetSize": 6,
+    "url": "/__l5e/assets-v1/fe72ac2a-3ae4-47e4-86d2-77945520b9cf/traffic-vehicles.glb"
+  },
+  {
+    "id": "supra",
+    "label": "Toyota GR Supra",
+    "category": "vehicle",
+    "modelFile": "toyota-supra.glb",
+    "targetSize": 5.5,
+    "url": "/__l5e/assets-v1/8bd9ba64-446b-4be3-b62c-af32c89956f0/toyota-supra.glb"
+  },
+  {
+    "id": "lamborghini",
+    "label": "Lamborghini Fenomeno",
+    "category": "vehicle",
+    "modelFile": "lamborghini-fenomeno.glb",
+    "targetSize": 5.5,
+    "url": "/__l5e/assets-v1/bd477f9a-6cfe-4510-aed1-712f89167cd3/lamborghini-fenomeno.glb"
+  },
+  {
+    "id": "mclaren",
+    "label": "McLaren W1",
+    "category": "vehicle",
+    "modelFile": "mclaren-w1.glb",
+    "targetSize": 5.5,
+    "url": "/__l5e/assets-v1/9916383f-daf6-48d3-b8c3-190e0a71ccaa/mclaren-w1.glb"
+  },
+  {
+    "id": "airport-plane",
+    "label": "Pesawat Bandara",
+    "category": "aircraft",
+    "modelFile": "airport-airplane.glb",
+    "targetSize": 16,
+    "url": "/__l5e/assets-v1/60168797-f7cc-406b-8fb5-55bb6a7ba538/airport-airplane.glb"
+  },
+  {
+    "id": "light-aircraft",
+    "label": "Pesawat Ringan",
+    "category": "aircraft",
+    "modelFile": "light-aircraft.glb",
+    "targetSize": 10,
+    "url": "/__l5e/assets-v1/2279437b-754d-414c-b602-d79f25c5de01/light-aircraft.glb"
+  },
+  {
+    "id": "decor-small",
+    "label": "Dekorasi kecil",
+    "category": "decoration",
+    "modelFile": "decoration-small.glb",
+    "targetSize": 5,
+    "url": "/__l5e/assets-v1/799245df-8144-4092-ac9e-7da89d78fbf6/decoration-small.glb"
+  },
+  {
+    "id": "football-ramp",
+    "label": "Football Ramp",
+    "category": "decoration",
+    "modelFile": "football-ramp.glb",
+    "targetSize": 10,
+    "url": "/__l5e/assets-v1/79761bf9-ff21-40c6-bd23-754e3adfc25d/football-ramp.glb"
+  },
+  {
+    "id": "decor-9827",
+    "label": "Dekorasi 9827",
+    "category": "decoration",
+    "modelFile": "decoration-9827.glb",
+    "targetSize": 7,
+    "url": "/__l5e/assets-v1/5abe913b-6c2a-47d6-b37d-810f6f08fbf4/decoration-9827.glb"
+  },
+  {
+    "id": "slide",
+    "label": "Slide Playground",
+    "category": "decoration",
+    "modelFile": "slide-playground.glb",
+    "targetSize": 8,
+    "url": "/__l5e/assets-v1/c5aacaf2-a9a8-4f24-b895-a9b9596ba46e/slide-playground.glb"
+  },
+  {
+    "id": "decor-f25",
+    "label": "Dekorasi F25",
+    "category": "decoration",
+    "modelFile": "decoration-f25.glb",
+    "targetSize": 7,
+    "url": "/__l5e/assets-v1/0d05cbfe-d07a-4d48-87e8-3edce04b774a/decoration-f25.glb"
+  },
+  {
+    "id": "decor-9567",
+    "label": "Dekorasi 9567",
+    "category": "decoration",
+    "modelFile": "decoration-9567.glb",
+    "targetSize": 7,
+    "url": "/__l5e/assets-v1/84311f1f-fe94-40f5-a2b3-b842e4be4d55/decoration-9567.glb"
+  },
+  {
+    "id": "decor-64f",
+    "label": "Dekorasi 64F",
+    "category": "decoration",
+    "modelFile": "decoration-64f.glb",
+    "targetSize": 7,
+    "url": "/__l5e/assets-v1/5ca867e0-b882-4de3-b9d7-3a2eb8dad29c/decoration-64f.glb"
+  },
+  {
+    "id": "akatosh-hammer",
+    "label": "Palu Akatosh",
+    "category": "decoration",
+    "modelFile": "akatosh-hammer.glb",
+    "targetSize": 3,
+    "url": "/__l5e/assets-v1/7432f24d-a71f-47d6-8009-b8967defb1d2/akatosh-hammer.glb"
+  },
+  {
+    "id": "toy-hammer",
+    "label": "Palu Mainan",
+    "category": "decoration",
+    "modelFile": "toy-hammer.glb",
+    "targetSize": 2.5,
+    "url": "/__l5e/assets-v1/5915f3f6-7063-456a-a0d0-04f4dfc34268/toy-hammer.glb"
+  },
+  {
+    "id": "hulk",
+    "label": "Hulk",
+    "category": "character",
+    "modelFile": "hulk.glb",
+    "targetSize": 3,
+    "url": "/__l5e/assets-v1/c55f3022-8b7a-480d-94f5-c7fcce69f4d9/hulk.glb"
+  },
+  {
+    "id": "spider-low",
+    "label": "Spider-Man Low Poly",
+    "category": "character",
+    "modelFile": "spiderman-low-poly.glb",
+    "targetSize": 2.1,
+    "url": "/__l5e/assets-v1/8e454977-3f53-417e-8cb6-871e8d821c57/spiderman-low-poly.glb"
+  },
+  {
+    "id": "iron-man",
+    "label": "Iron Man",
+    "category": "character",
+    "modelFile": "iron-man.glb",
+    "targetSize": 2.1,
+    "url": "/__l5e/assets-v1/207a56b0-1d65-4fda-a97c-e6aa3961f200/iron-man.glb"
+  },
+  {
+    "id": "spider-new",
+    "label": "Spider-Man New Day",
+    "category": "character",
+    "modelFile": "spiderman-new-day.glb",
+    "targetSize": 2.1,
+    "url": "/__l5e/assets-v1/a28666e4-8248-4405-9611-53ff20ce18fc/spiderman-new-day.glb"
+  },
+  {
+    "id": "spider-mff",
+    "label": "Spider-Man MFF",
+    "category": "character",
+    "modelFile": "spiderman-mff.glb",
+    "targetSize": 2.1,
+    "url": "/__l5e/assets-v1/066e16c6-6d9b-488e-9dd6-2dc3e4af733c/spiderman-mff.glb"
+  },
+  {
+    "id": "pirate-map",
+    "label": "Pirate Adventure",
+    "category": "map",
+    "modelFile": "pirate-adventure-map.glb",
+    "targetSize": 260,
+    "url": "/__l5e/assets-v1/15520480-0ea1-41c9-a6b5-ba4e389c5c1c/pirate-adventure-map.glb"
+  },
+  {
+    "id": "taiwan-map",
+    "label": "Taiwan",
+    "category": "map",
+    "modelFile": "taiwan-map.glb",
+    "targetSize": 260,
+    "url": "/__l5e/assets-v1/1fc7cc5d-aa1a-4f1f-9cc3-e3d829734331/taiwan-map.glb"
+  },
+  {
+    "id": "tram-map",
+    "label": "Tram Station",
+    "category": "map",
+    "modelFile": "tram-station-map.glb",
+    "targetSize": 260,
+    "url": "/__l5e/assets-v1/ffd43264-e20e-4195-b768-958efb0d488a/tram-station-map.glb"
+  },
+  {
+    "id": "cartoon-trees",
+    "label": "Cartoon Trees",
+    "category": "tree",
+    "modelFile": "cartoon-trees.glb",
+    "targetSize": 7,
+    "url": "/__l5e/assets-v1/f4c2f50d-bdb7-446e-af95-1a9a8a2fa25a/cartoon-trees.glb"
+  },
+  {
+    "id": "old-tree",
+    "label": "Old Tree",
+    "category": "tree",
+    "modelFile": "old-tree.glb",
+    "targetSize": 8,
+    "url": "/__l5e/assets-v1/9eea468a-6a7b-4e3f-8de9-e109f3d0eab0/old-tree.glb"
+  },
+  {
+    "id": "polygon-trees",
+    "label": "Polygon Tree Pack",
+    "category": "tree",
+    "modelFile": "polygon-tree-pack.glb",
+    "targetSize": 8,
+    "url": "/__l5e/assets-v1/be5b0ff0-1c69-412b-b694-462c38a3ee96/polygon-tree-pack.glb"
+  },
+  {
+    "id": "tree-scene",
+    "label": "Low Poly Tree Scene",
+    "category": "tree",
+    "modelFile": "low-poly-tree-scene.glb",
+    "targetSize": 9,
+    "url": "/__l5e/assets-v1/48b1d32e-22b6-497b-8012-6042024253e6/low-poly-tree-scene.glb"
+  },
+  {
+    "id": "farm-tractors",
+    "label": "Farm Tractors",
+    "category": "tractor",
+    "modelFile": "farm-tractors.glb",
+    "targetSize": 6,
+    "url": "/__l5e/assets-v1/bdf35a3a-7783-4fd8-aa63-a435d5731c3e/farm-tractors.glb"
+  },
+  {
+    "id": "tractor-dt75",
+    "label": "DT-75",
+    "category": "tractor",
+    "modelFile": "tractor-dt75.glb",
+    "targetSize": 6,
+    "url": "/__l5e/assets-v1/418894e6-f1d7-4349-8c1a-b74769112e24/tractor-dt75.glb"
+  },
+  {
+    "id": "tractor-hcr2",
+    "label": "HCR2 Tractor",
+    "category": "tractor",
+    "modelFile": "tractor-hcr2.glb",
+    "targetSize": 6,
+    "url": "/__l5e/assets-v1/038f03b1-0ea0-4a96-b227-0a8fb1e7f282/tractor-hcr2.glb"
+  },
+  {
+    "id": "tractor-mtz80",
+    "label": "MTZ-80 Belarus",
+    "category": "tractor",
+    "modelFile": "tractor-mtz80.glb",
+    "targetSize": 6,
+    "url": "/__l5e/assets-v1/c2937f46-1288-4bf9-ade0-f61d95cd6f21/tractor-mtz80.glb"
+  },
+  {
+    "id": "tractor-mtz80-lowpoly",
+    "label": "MTZ-80 Low Poly",
+    "category": "tractor",
+    "modelFile": "tractor-mtz80-lowpoly.glb",
+    "targetSize": 6,
+    "url": "/__l5e/assets-v1/4a0de44d-33ef-4d0d-9bed-f09adf10c91b/tractor-mtz80-lowpoly.glb"
+  },
+  {
+    "id": "tractor-david-brown",
+    "label": "David Brown 25D",
+    "category": "tractor",
+    "modelFile": "tractor-david-brown.glb",
+    "targetSize": 6,
+    "url": "/__l5e/assets-v1/cf3e0353-98ee-4cda-b7bd-a14a2ac08cc5/tractor-david-brown.glb"
+  },
+  {
+    "id": "tractor-tracktor",
+    "label": "Tracktor",
+    "category": "tractor",
+    "modelFile": "tractor-tracktor.glb",
+    "targetSize": 6,
+    "url": "/__l5e/assets-v1/9f92cd5f-80c1-4b7a-a4fe-a8c2a4f68018/tractor-tracktor.glb"
+  },
+  {
+    "id": "road-03",
+    "label": "Road 03",
+    "category": "road",
+    "modelFile": "road-03.glb",
+    "targetSize": 24,
+    "url": "/__l5e/assets-v1/a65b2648-35f4-429d-ab84-eae14c0e0c7d/road-03.glb"
+  },
+  {
+    "id": "road-standard",
+    "label": "Road",
+    "category": "road",
+    "modelFile": "road-standard.glb",
+    "targetSize": 24,
+    "url": "/__l5e/assets-v1/62df8aa1-b551-4f08-af2f-ba4a0ce477d6/road-standard.glb"
+  },
+  {
+    "id": "road-stunt",
+    "label": "Stunt Road",
+    "category": "road",
+    "modelFile": "road-stunt.glb",
+    "targetSize": 18,
+    "url": "/__l5e/assets-v1/82283a61-3052-45ad-92c5-fde5187059a0/road-stunt.glb"
+  },
+  {
+    "id": "road-wooden-ramp",
+    "label": "Wooden Stunt Ramp",
+    "category": "road",
+    "modelFile": "road-wooden-ramp.glb",
+    "targetSize": 12,
+    "url": "/__l5e/assets-v1/c9d0b869-fe79-49ee-8e4e-4a005ca3efa7/road-wooden-ramp.glb"
+  },
+  {
+    "id": "road-industrial-ramp",
+    "label": "Industrial Stunt Ramp",
+    "category": "road",
+    "modelFile": "road-industrial-ramp.glb",
+    "targetSize": 12,
+    "url": "/__l5e/assets-v1/565558ed-dd48-48fb-bfff-831991284ea6/road-industrial-ramp.glb"
+  },
+  {
+    "id": "ball-balls",
+    "label": "Bola Warna",
+    "category": "ball",
+    "modelFile": "ball-balls.glb",
+    "targetSize": 3,
+    "url": "/__l5e/assets-v1/66c48ac4-3652-4c24-9b5a-29982db3afad/ball-balls.glb"
+  },
+  {
+    "id": "ball-balloons",
+    "label": "Balon Warna-warni",
+    "category": "ball",
+    "modelFile": "ball-colorful-balloons.glb",
+    "targetSize": 3,
+    "url": "/__l5e/assets-v1/702f19f5-c7c3-48ce-9b84-5e2c6f757632/ball-colorful-balloons.glb"
+  },
+  {
+    "id": "ball-pool",
+    "label": "Kolam Bola",
+    "category": "ball",
+    "modelFile": "ball-ball-pool.glb",
+    "targetSize": 8,
+    "url": "/__l5e/assets-v1/daa7424b-ab3c-4efd-8231-a2a860030148/ball-ball-pool.glb"
+  },
+  {
+    "id": "ball-arch",
+    "label": "Gapura Balon",
+    "category": "ball",
+    "modelFile": "ball-balloon-arch.glb",
+    "targetSize": 8,
+    "url": "/__l5e/assets-v1/d2c1e6e0-cdf7-4a05-b958-fd9c62d530ba/ball-balloon-arch.glb"
+  }
+]

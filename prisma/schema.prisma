@@ -1,0 +1,86 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  username  String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  projects  Project[]
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  world       World?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model World {
+  id          String        @id @default(uuid())
+  name        String
+  size        Float         @default(100)
+  gridSize    Float         @default(1)
+  projectId   String        @unique
+  project     Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  objects     WorldObject[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model WorldObject {
+  id        String   @id @default(uuid())
+  worldId   String
+  world     World    @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  type      String
+  name      String
+  category  String
+  assetId   String
+  posX      Float
+  posY      Float
+  posZ      Float
+  rotX      Float
+  rotY      Float
+  rotZ      Float
+  scaleX    Float
+  scaleY    Float
+  scaleZ    Float
+  visible   Boolean  @default(true)
+  locked    Boolean  @default(false)
+  color     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Asset {
+  id          String   @id
+  name        String
+  category    String
+  type        String
+  modelUrl    String?
+  color       String?
+  createdAt   DateTime @default(now())
+}
+
+model ConstructionProject {
+  id           String   @id @default(uuid())
+  name         String
+  budget       Float
+  progress     Float    @default(0)
+  duration     String
+  currentStage String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
