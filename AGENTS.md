@@ -47,22 +47,29 @@
 
 ---
 
-## 3. Commands
+## 3. Commands & Launchers
 
 ```bash
+# Launcher Scripts (Windows One-Click)
+start_web.bat         # Menjalankan Web Suite lengkap (3D Web Editor di http://localhost:5173 + Fastify API di port 3000)
+start_app.bat         # Menjalankan Versi Desktop Native (Tauri 2.x GPU Window 1440x900 + Fastify API)
+stop.bat              # Menghentikan seluruh proses web, API, dan desktop secara bersih
+
 # Package Management & Setup
 pnpm install          # Install semua dependensi monorepo
 
 # Development
-pnpm dev              # Menjalankan dev server (Web di http://localhost:5173, API di port 3000)
+pnpm dev              # Menjalankan Web Suite (Frontend Web & Backend API secara paralel)
 pnpm dev:web          # Menjalankan hanya Frontend Web 3D Editor
 pnpm dev:api          # Menjalankan backend Fastify API
+pnpm dev:desktop      # Menjalankan Desktop Native App (Tauri 2.x)
 
 # Build & Validation
-pnpm build            # Type-check TypeScript & build bundle production
+pnpm build            # Type-check TypeScript & build bundle production web
+pnpm build:desktop    # Build bundle executable desktop Tauri
+pnpm test             # Menjalankan unit & integration test suite (Vitest)
 pnpm lint             # Linter kode
 ```
-
 ---
 
 ## 4. Project Structure (PNPM Monorepo)

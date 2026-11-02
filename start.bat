@@ -1,48 +1,31 @@
 @echo off
-setlocal enabledelayedexpansion
-
-title AUDIRA 3D CONSTRUCTION SIMULATOR - Launcher
-color 0b
+title AUDIRA 3D SIMULATOR - Launcher Menu
+color 0e
 
 echo ===============================================================================
-echo                AUDIRA 3D CONSTRUCTION SIMULATOR
-echo         3D World Builder + Construction Simulator in Browser
+echo                AUDIRA 3D CONSTRUCTION SIMULATOR - LAUNCHER
 echo ===============================================================================
 echo.
-
-:: 1. Check Node.js and PNPM
-where pnpm >nul 2>nul
-if %errorlevel% neq 0 (
-    echo [ERROR] pnpm tidak ditemukan di PATH sistem!
-    echo Silakan install pnpm terlebih dahulu: npm install -g pnpm
-    pause
-    exit /b 1
-)
-
-:: 2. Check and Install dependencies if needed
-if not exist "node_modules" (
-    echo [INFO] Menginstal dependensi pnpm monorepo...
-    call pnpm install
-    if %errorlevel% neq 0 (
-        echo [ERROR] Gagal menginstal dependensi!
-        pause
-        exit /b 1
-    )
-)
-
-:: 3. Launch Development Server
-echo [INFO] Menjalankan AUDIRA 3D Simulator (Vite React Three Fiber)...
-echo [INFO] Frontend: http://localhost:5173
+echo Pilih mode yang ingin Anda jalankan:
 echo.
+echo [1] Versi Web Browser + Komponen API (start_web.bat)
+echo [2] Versi Desktop Native Tauri 2.x  (start_app.bat)
+echo [3] Hentikan Semua Proses          (stop.bat)
+echo.
+set /p choice="Masukkan pilihan [1/2/3] (Default 1): "
 
-start "AUDIRA 3D Web Editor" cmd /k "pnpm dev:web"
+if "%choice%"=="2" goto launch_app
+if "%choice%"=="3" goto launch_stop
+goto launch_web
 
-:: Wait 3 seconds then open browser
-timeout /t 3 >nul
-start http://localhost:5173/
+:launch_web
+call "%~dp0start_web.bat"
+exit /b 0
 
-echo ===============================================================================
-echo [SUCCESS] Simulator aktif! Buka browser di http://localhost:5173
-echo Untuk menghentikan simulator, jalankan stop.bat
-echo ===============================================================================
-pause
+:launch_app
+call "%~dp0start_app.bat"
+exit /b 0
+
+:launch_stop
+call "%~dp0stop.bat"
+exit /b 0
