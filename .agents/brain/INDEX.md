@@ -56,6 +56,7 @@ Brain diorganisir secara modular agar dapat dikonsultasikan dengan cepat oleh AI
 | **04. Matriks Asset & Simulasi**| [ASSET_AND_SIMULATION_MATRIX.md](file:///f:/AUDIRA-3D-SIMULATOR/.agents/brain/ASSET_AND_SIMULATION_MATRIX.md) | Katalog lengkap 52 model GLB, bounding box offset, skala normal, dan klasifikasi kendaraan. |
 | **05. Database & Alur Data** | [DATABASE_AND_DATA_FLOW.md](file:///f:/AUDIRA-3D-SIMULATOR/.agents/brain/DATABASE_AND_DATA_FLOW.md) | Mutasi state scene graph, serialisasi JSON, skema Prisma API, dan autosave flow. |
 | **06. Log & Roadmap** | [UPDATE_HISTORY_AND_ROADMAP.md](file:///f:/AUDIRA-3D-SIMULATOR/.agents/brain/UPDATE_HISTORY_AND_ROADMAP.md) | Riwayat rilis v1.0.0, backlog V2 Rapier Physics, dan integrasi career mode V3. |
+| **07. Multi-Agent Orchestration** | [MULTI_AGENT_AGENCY_ORCHESTRATION.md](file:///f:/AUDIRA-3D-SIMULATOR/.agents/brain/MULTI_AGENT_AGENCY_ORCHESTRATION.md) | Integrasi 5 divisi spesialis Agency, alur Dev-QA loops, dan tata kelola anti-amnesia. |
 
 ---
 

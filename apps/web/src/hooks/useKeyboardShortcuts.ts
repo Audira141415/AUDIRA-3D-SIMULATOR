@@ -3,6 +3,7 @@ import { useEditorStore } from '../stores/useEditorStore';
 import { useWorldStore } from '../stores/useWorldStore';
 import { useSelectionStore } from '../stores/useSelectionStore';
 import { useCameraStore } from '../stores/useCameraStore';
+import { useVehicleAudioStore } from '../stores/useVehicleAudioStore';
 import { soundEngine } from '../features/audio/soundEngine';
 
 export const useKeyboardShortcuts = () => {
@@ -113,7 +114,20 @@ export const useKeyboardShortcuts = () => {
             if (obj) setFocusTarget(obj.position);
           }
           break;
+        case 'm':
+          if (useEditorStore.getState().isPlaying) {
+            useVehicleAudioStore.getState().toggleAudioModal();
+          }
+          break;
         case 'escape':
+          if (useVehicleAudioStore.getState().isAudioModalOpen) {
+            useVehicleAudioStore.getState().closeAudioModal();
+            break;
+          }
+          if (useVehicleAudioStore.getState().isObsMode) {
+            useVehicleAudioStore.getState().setObsMode(false);
+            break;
+          }
           if (useEditorStore.getState().isPlaying) {
             soundEngine.stopEngine();
             useEditorStore.getState().setIsPlaying(false);

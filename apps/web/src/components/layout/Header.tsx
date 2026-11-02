@@ -19,6 +19,18 @@ import {
   Terminal,
   PanelBottom,
   PanelRight,
+  Video,
+  Film,
+  Music,
+  Tv,
+  Gauge,
+  SlidersHorizontal,
+  Sparkles,
+  Route,
+  Mountain,
+  Layers,
+  Database,
+  DownloadCloud,
 } from 'lucide-react';
 import { useWorldStore } from '../../stores/useWorldStore';
 import { useSelectionStore } from '../../stores/useSelectionStore';
@@ -26,6 +38,17 @@ import { useEditorStore } from '../../stores/useEditorStore';
 import { useHistoryStore } from '../../stores/useHistoryStore';
 import { useWeatherStore } from '../../stores/useWeatherStore';
 import { useCameraStore } from '../../stores/useCameraStore';
+import { useVideoRecordStore } from '../../stores/useVideoRecordStore';
+import { useVehicleAudioStore } from '../../stores/useVehicleAudioStore';
+import { useVehicleRunStore } from '../../stores/useVehicleRunStore';
+import { useTerrainSculptStore } from '../../stores/useTerrainSculptStore';
+import { useMultiLayerRecordStore } from '../../stores/useMultiLayerRecordStore';
+import { useVisualStyleStore } from '../../stores/useVisualStyleStore';
+import { useScraperStore } from '../../stores/useScraperStore';
+import { useVehicleFxStore } from '../../stores/useVehicleFxStore';
+import { WorldBackupModal } from '../../features/save/WorldBackupModal';
+import { QualityToggle } from './QualityToggle';
+import { useKreatorStudioStore } from '../../stores/useKreatorStudioStore';
 import { exportWorldToJSON, saveWorldToLocalStorage, loadWorldFromLocalStorage } from '../../features/save/saveManager';
 import { soundEngine } from '../../features/audio/soundEngine';
 import { useScreenRecorder } from '../../features/recording/useScreenRecorder';
@@ -60,17 +83,40 @@ export const Header: React.FC = () => {
   const toggleAssetLibrary = useEditorStore((s) => s.toggleAssetLibrary);
 
   const preset = useCameraStore((s) => s.preset);
+  const isCinematicPanelOpen = useCameraStore((s) => s.isCinematicPanelOpen);
+  const toggleCinematicPanel = useCameraStore((s) => s.toggleCinematicPanel);
+  const isVideoRecording = useVideoRecordStore((s) => s.isRecording);
+  const videoRecordDuration = useVideoRecordStore((s) => s.recordDuration);
 
   const timeOfDay = useWeatherStore((s) => s.timeOfDay);
   const setTimeOfDay = useWeatherStore((s) => s.setTimeOfDay);
   const autoCycle = useWeatherStore((s) => s.autoCycle);
   const toggleAutoCycle = useWeatherStore((s) => s.toggleAutoCycle);
+  const weather = useWeatherStore((s) => s.weather);
+  const setWeather = useWeatherStore((s) => s.setWeather);
 
   const { isRecording, recordSeconds, toggleRecording } = useScreenRecorder();
+
+  const simSpeed = useEditorStore((s) => s.simSpeed);
+  const openAudioModal = useVehicleAudioStore((s) => s.openAudioModal);
+  const isObsMode = useVehicleAudioStore((s) => s.isObsMode);
+  const toggleObsMode = useVehicleAudioStore((s) => s.toggleObsMode);
+  const graphicsQuality = useVehicleAudioStore((s) => s.graphicsQuality);
+  const setGraphicsQuality = useVehicleAudioStore((s) => s.setGraphicsQuality);
+  const openKreatorStudio = useKreatorStudioStore((s) => s.openStudio);
+  const isRunOpen = useVehicleRunStore((s) => s.isOpen);
+  const isLayerOpen = useMultiLayerRecordStore((s) => s.isOpen);
+  const isSculptActive = useTerrainSculptStore((s) => s.isSculptActive);
+  const isVisualOpen = useVisualStyleStore((s) => s.isOpen);
+  const isScraperOpen = useScraperStore((s) => s.isModalOpen);
+  const isScrapingActive = useScraperStore((s) => s.isScraping);
+  const toggleRunModal = useVehicleRunStore((s) => s.toggleOpen);
+  const isRunActive = useVehicleRunStore((s) => s.isRunning);
 
   const [isMuted, setIsMuted] = useState(soundEngine.getMuted());
   const [fps, setFps] = useState(60);
   const [isTelemetryOpen, setIsTelemetryOpen] = useState(false);
+  const [isBackupOpen, setIsBackupOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Live FPS counter
@@ -175,106 +221,268 @@ export const Header: React.FC = () => {
       </div>
 
       {/* 2. CENTER TOOL CLUSTERS */}
-      <div className="flex items-center gap-2">
-        {/* History Group (Undo / Redo) */}
-        <div className="flex items-center bg-slate-950/80 p-0.5 rounded-lg border border-white/10">
-          <button
-            onClick={() => {
-              soundEngine.playUndo();
-              undo();
-            }}
-            disabled={!canUndo}
-            className="p-1 px-2 rounded text-slate-300 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-all flex items-center gap-1 text-[11px] font-medium"
-            title="Batal Perubahan (Ctrl+Z)"
-          >
-            <Undo2 className="w-3.5 h-3.5" />
-            <span className="hidden xl:inline">Undo</span>
-          </button>
-
-          <button
-            onClick={() => {
-              soundEngine.playRedo();
-              redo();
-            }}
-            disabled={!canRedo}
-            className="p-1 px-2 rounded text-slate-300 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-all flex items-center gap-1 text-[11px] font-medium"
-            title="Ulangi Perubahan (Ctrl+Y)"
-          >
-            <Redo2 className="w-3.5 h-3.5" />
-            <span className="hidden xl:inline">Redo</span>
-          </button>
+      {isPlaying ? (
+        <div className="flex items-center gap-2 animate-fadeIn">
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-bold shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+            <span className="tracking-wide uppercase font-mono text-[11px]">Mode Simulasi &amp; Mengemudi</span>
+          </div>
         </div>
+      ) : (
+        <div className="flex items-center gap-2">
+          {/* History Group (Undo / Redo) */}
+          <div className="flex items-center bg-slate-950/80 p-0.5 rounded-lg border border-white/10">
+            <button
+              onClick={() => {
+                soundEngine.playUndo();
+                undo();
+              }}
+              disabled={!canUndo}
+              className="p-1 px-2 rounded text-slate-300 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-all flex items-center gap-1 text-[11px] font-medium"
+              title="Batal Perubahan (Ctrl+Z)"
+            >
+              <Undo2 className="w-3.5 h-3.5" />
+              <span className="hidden xl:inline">Undo</span>
+            </button>
 
-        {/* File & Scene Group */}
-        <div className="flex items-center bg-slate-950/80 p-0.5 rounded-lg border border-white/10">
+            <button
+              onClick={() => {
+                soundEngine.playRedo();
+                redo();
+              }}
+              disabled={!canRedo}
+              className="p-1 px-2 rounded text-slate-300 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-all flex items-center gap-1 text-[11px] font-medium"
+              title="Ulangi Perubahan (Ctrl+Y)"
+            >
+              <Redo2 className="w-3.5 h-3.5" />
+              <span className="hidden xl:inline">Redo</span>
+            </button>
+          </div>
+
+          {/* File & Scene Group */}
+          <div className="flex items-center bg-slate-950/80 p-0.5 rounded-lg border border-white/10">
+            <button
+              onClick={handleExportJSON}
+              className="p-1 px-2 rounded text-slate-300 hover:text-cyan-300 hover:bg-cyan-500/10 transition-all flex items-center gap-1 text-[11px] font-medium"
+              title="Simpan Proyek ke File JSON & LocalStorage"
+            >
+              <Save className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Save</span>
+            </button>
+
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="p-1 px-2 rounded text-slate-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1 text-[11px] font-medium"
+              title="Buka Proyek dari File JSON"
+            >
+              <FolderOpen className="w-3.5 h-3.5" />
+              <span>Load</span>
+            </button>
+
+            <button
+              onClick={newWorld}
+              className="p-1 px-2 rounded text-slate-300 hover:text-emerald-300 hover:bg-emerald-500/10 transition-all flex items-center gap-1 text-[11px] font-medium"
+              title="Buat Kanvas Dunia Baru"
+            >
+              <PlusCircle className="w-3.5 h-3.5 text-emerald-400" />
+              <span>New</span>
+            </button>
+
+            <button
+              onClick={resetDefaultWorld}
+              className="p-1 px-2 rounded text-slate-300 hover:text-cyan-300 hover:bg-cyan-500/10 transition-all flex items-center gap-1 text-[11px] font-medium"
+              title="Muat Ulang Peta Showcase Lengkap"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Reset Map</span>
+            </button>
+
+            <button
+              onClick={handleClearAll}
+              disabled={objects.length === 0}
+              className="p-1 px-2 rounded text-rose-300 hover:text-white hover:bg-rose-500/20 disabled:opacity-30 disabled:hover:bg-transparent transition-all flex items-center gap-1 text-[11px] font-medium"
+              title="Hapus Semua Objek dari Kanvas"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+              <span>Clear</span>
+            </button>
+          </div>
+
+          {/* AI 3D Forge Studio Button */}
           <button
-            onClick={handleExportJSON}
-            className="p-1 px-2 rounded text-slate-300 hover:text-cyan-300 hover:bg-cyan-500/10 transition-all flex items-center gap-1 text-[11px] font-medium"
-            title="Simpan Proyek ke File JSON & LocalStorage"
+            onClick={() => setIsStudioOpen(true)}
+            className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-cyan-500/25 via-blue-500/20 to-purple-500/25 hover:from-cyan-500/40 hover:to-purple-500/40 text-cyan-200 border border-cyan-400/50 transition-all flex items-center gap-1.5 text-xs font-bold shadow-[0_0_12px_rgba(6,182,212,0.3)] hover:scale-[1.02] active:scale-95"
+            title="Buka Forge3D Studio (Buat Model 3D dari Gambar)"
           >
-            <Save className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Save</span>
+            <Wand2 className="w-3.5 h-3.5 text-cyan-300" />
+            <span>AI 3D Maker</span>
           </button>
 
+          {/* BANG PAY MAGIC PRO — 10 Tools Kreator Suite Button */}
           <button
-            onClick={() => fileInputRef.current?.click()}
-            className="p-1 px-2 rounded text-slate-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1 text-[11px] font-medium"
-            title="Buka Proyek dari File JSON"
+            onClick={() => openKreatorStudio()}
+            className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-purple-600/30 via-pink-600/25 to-amber-500/30 hover:from-purple-600/50 hover:to-amber-500/50 text-amber-200 border border-amber-400/50 transition-all flex items-center gap-1.5 text-xs font-black shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:scale-[1.02] active:scale-95 cursor-pointer"
+            title="Buka BANG PAY MAGIC PRO"
           >
-            <FolderOpen className="w-3.5 h-3.5" />
-            <span>Load</span>
+            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+            <span>KREATOR STUDIO</span>
+            <span className="text-[9px] font-black bg-amber-400/20 text-amber-300 px-1 py-0.2 rounded border border-amber-400/40">
+              10 TOOLS
+            </span>
           </button>
 
+          {/* Cinematic Camera & Video Recorder Button */}
           <button
-            onClick={newWorld}
-            className="p-1 px-2 rounded text-slate-300 hover:text-emerald-300 hover:bg-emerald-500/10 transition-all flex items-center gap-1 text-[11px] font-medium"
-            title="Buat Kanvas Dunia Baru"
+            onClick={toggleCinematicPanel}
+            className={`px-2.5 py-1 rounded-lg border transition-all flex items-center gap-1.5 text-xs font-bold shadow-lg hover:scale-[1.02] active:scale-95 ${
+              isVideoRecording
+                ? 'bg-rose-600 text-white border-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.6)] animate-pulse'
+                : isCinematicPanelOpen
+                ? 'bg-cyan-500/30 text-cyan-200 border-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.4)]'
+                : 'bg-slate-950/80 text-rose-300 border-rose-500/30 hover:border-rose-400/60 hover:bg-rose-500/10'
+            }`}
+            title="Buka Kamera Sinematik & Perekam Video"
           >
-            <PlusCircle className="w-3.5 h-3.5 text-emerald-400" />
-            <span>New</span>
+            {isVideoRecording ? (
+              <>
+                <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+                <span>REC {Math.floor(videoRecordDuration / 60).toString().padStart(2, '0')}:{(videoRecordDuration % 60).toString().padStart(2, '0')}</span>
+              </>
+            ) : (
+              <>
+                <Film className="w-3.5 h-3.5 text-rose-400" />
+                <span>Sinematik &amp; Rekam</span>
+              </>
+            )}
           </button>
 
-          <button
-            onClick={resetDefaultWorld}
-            className="p-1 px-2 rounded text-slate-300 hover:text-cyan-300 hover:bg-cyan-500/10 transition-all flex items-center gap-1 text-[11px] font-medium"
-            title="Muat Ulang Peta Showcase Lengkap"
-          >
-            <RotateCcw className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Reset Map</span>
-          </button>
-
-          <button
-            onClick={handleClearAll}
-            disabled={objects.length === 0}
-            className="p-1 px-2 rounded text-rose-300 hover:text-white hover:bg-rose-500/20 disabled:opacity-30 disabled:hover:bg-transparent transition-all flex items-center gap-1 text-[11px] font-medium"
-            title="Hapus Semua Objek dari Kanvas"
-          >
-            <Trash2 className="w-3.5 h-3.5 text-rose-400" />
-            <span>Clear</span>
-          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            onChange={handleImportFile}
+            className="hidden"
+          />
         </div>
-
-        {/* AI 3D Forge Studio Button */}
-        <button
-          onClick={() => setIsStudioOpen(true)}
-          className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-cyan-500/25 via-blue-500/20 to-purple-500/25 hover:from-cyan-500/40 hover:to-purple-500/40 text-cyan-200 border border-cyan-400/50 transition-all flex items-center gap-1.5 text-xs font-bold shadow-[0_0_12px_rgba(6,182,212,0.3)] hover:scale-[1.02] active:scale-95"
-          title="Buka Forge3D Studio (Buat Model 3D dari Gambar)"
-        >
-          <Wand2 className="w-3.5 h-3.5 text-cyan-300" />
-          <span>AI 3D Maker</span>
-        </button>
-
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".json"
-          onChange={handleImportFile}
-          className="hidden"
-        />
-      </div>
+      )}
 
       {/* 3. RIGHT UTILITIES (SIMULATION, SUN, MEDIA, TELEMETRY, PANELS) */}
       <div className="flex items-center gap-2">
+                {/* Creative Suite Segmented Pill Cluster */}
+        <div className="flex items-center bg-slate-950/90 p-0.5 rounded-xl border border-white/10 shadow-sm gap-0.5">
+          {/* RUN Simulation */}
+          <button
+            type="button"
+            onClick={() => {
+              soundEngine.playUIClick();
+              toggleRunModal();
+            }}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+              isRunActive
+                ? 'bg-cyan-500/30 text-cyan-300 border border-cyan-400/80 shadow-[0_0_12px_rgba(6,182,212,0.5)] animate-pulse'
+                : isRunOpen
+                ? 'bg-cyan-500/25 text-cyan-300 border border-cyan-400/60 shadow-[0_0_10px_rgba(6,182,212,0.3)]'
+                : 'text-slate-300 hover:text-white hover:bg-white/5 border border-transparent'
+            }`}
+            title="Buka Panel RUN (Simulasi Lintasan Banyak Kendaraan)"
+          >
+            <Route className="w-3.5 h-3.5 text-cyan-400" />
+            <span>RUN</span>
+            {isRunActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />}
+          </button>
+
+          {/* Multi-Layer Activity Recording */}
+          <button
+            type="button"
+            onClick={() => {
+              soundEngine.playUIClick();
+              useMultiLayerRecordStore.getState().toggleOpen();
+            }}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+              isLayerOpen
+                ? 'bg-blue-500/25 text-blue-300 border border-blue-400/60 shadow-[0_0_10px_rgba(59,130,246,0.3)]'
+                : 'text-slate-300 hover:text-white hover:bg-white/5 border border-transparent'
+            }`}
+            title="Multi-Layer Activity Recording (Ghost Car Replay)"
+          >
+            <Layers className="w-3.5 h-3.5 text-blue-400" />
+            <span className="hidden xl:inline">LAYER</span>
+          </button>
+
+          {/* Bentuk Tanah (3D Sculptor) */}
+          <button
+            type="button"
+            onClick={() => {
+              soundEngine.playUIClick();
+              useTerrainSculptStore.getState().toggleSculptActive();
+            }}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+              isSculptActive
+                ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-400/60 shadow-[0_0_10px_rgba(16,185,129,0.3)]'
+                : 'text-slate-300 hover:text-white hover:bg-white/5 border border-transparent'
+            }`}
+            title="Bentuk Kontur Tanah (3D Terrain Sculptor)"
+          >
+            <Mountain className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="hidden xl:inline">TANAH</span>
+          </button>
+
+          {/* Visual Studio & Kamera */}
+          <button
+            type="button"
+            onClick={() => {
+              soundEngine.playUIClick();
+              useVisualStyleStore.getState().toggleOpen();
+            }}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+              isVisualOpen
+                ? 'bg-amber-500/25 text-amber-300 border border-amber-400/60 shadow-[0_0_10px_rgba(245,158,11,0.3)]'
+                : 'text-slate-300 hover:text-white hover:bg-white/5 border border-transparent'
+            }`}
+            title="Camera & Visual Studio (Slowmo, Frame Aspect Ratio, Filters)"
+          >
+            <Camera className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden xl:inline">VISUAL</span>
+          </button>
+
+                    {/* Auto-Scraper Aset GLB */}
+          <button
+            type="button"
+            onClick={() => {
+              soundEngine.playUIClick();
+              useScraperStore.getState().setModalOpen(true);
+            }}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+              isScraperOpen
+                ? 'bg-cyan-500/25 text-cyan-300 border border-cyan-400/60 shadow-[0_0_10px_rgba(6,182,212,0.3)]'
+                : 'text-slate-300 hover:text-white hover:bg-white/5 border border-transparent'
+            }`}
+            title="Auto-Scraper Aset 3D GLB (Sinkronisasi dari BangPay)"
+          >
+            <DownloadCloud className={`w-3.5 h-3.5 text-cyan-400 ${isScrapingActive ? 'animate-bounce' : ''}`} />
+            <span className="hidden xl:inline">SCRAPE</span>
+            {isScrapingActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />}
+          </button>
+
+          {/* Backup & Restore Peta */}
+          <button
+            type="button"
+            onClick={() => {
+              soundEngine.playUIClick();
+              setIsBackupOpen(true);
+            }}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+              isBackupOpen
+                ? 'bg-purple-500/25 text-purple-300 border border-purple-400/60 shadow-[0_0_10px_rgba(168,85,247,0.3)]'
+                : 'text-slate-300 hover:text-white hover:bg-white/5 border border-transparent'
+            }`}
+            title="Backup & Restore Konfigurasi Peta"
+          >
+            <Database className="w-3.5 h-3.5 text-purple-400" />
+            <span className="hidden xl:inline">BACKUP</span>
+          </button>
+        </div>
+
         {/* Play/Stop Drive Simulation Mode */}
         <button
           type="button"
@@ -336,6 +544,26 @@ export const Header: React.FC = () => {
           >
             24H
           </button>
+
+          {/* Weather Toggle (Cerah -> Hujan -> Mendung) */}
+          <button
+            type="button"
+            onClick={() => {
+              if (weather === 'clear') setWeather('rain');
+              else if (weather === 'rain') setWeather('overcast');
+              else setWeather('clear');
+            }}
+            className={`px-1.5 py-0.5 rounded text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer ${
+              weather === 'rain'
+                ? 'bg-blue-500/30 text-blue-300 border border-blue-400/60 shadow-[0_0_10px_rgba(59,130,246,0.3)] animate-pulse'
+                : weather === 'overcast'
+                ? 'bg-slate-700/50 text-slate-300 border border-slate-600'
+                : 'text-amber-400 hover:text-amber-300 hover:bg-white/5'
+            }`}
+            title={`Cuaca: ${weather.toUpperCase()} (Klik untuk Ganti)`}
+          >
+            <span>{weather === 'rain' ? '🌧️ Hujan' : weather === 'overcast' ? '☁️ Mendung' : '☀️ Cerah'}</span>
+          </button>
         </div>
 
         {/* Media Tools (REC, Screenshot, Horn, Mute) */}
@@ -387,6 +615,43 @@ export const Header: React.FC = () => {
             {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
           </button>
         </div>
+
+        {/* Audio Kendaraan & Pemutar Musik Button (Matching Screenshot) */}
+        <button
+          type="button"
+          onClick={openAudioModal}
+          className="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/60 text-amber-300 font-bold text-[11px] flex items-center gap-1.5 transition-all shadow-[0_0_12px_rgba(245,158,11,0.2)] active:scale-95 cursor-pointer"
+          title="Buka Pengaturan Audio Kendaraan & Pemutar Musik"
+        >
+          <Music className="w-3.5 h-3.5 text-amber-400" />
+          <span className="hidden lg:inline">AUDIO KENDARAAN</span>
+        </button>
+
+        {/* Quality Selector Badge */}
+        <QualityToggle />
+
+        {/* Mode OBS Clean View Toggle Button (Matching Screenshot) */}
+        <button
+          type="button"
+          onClick={toggleObsMode}
+          className={`px-2 py-1 rounded-lg border text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+            isObsMode
+              ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.5)]'
+              : 'bg-slate-950/80 hover:bg-slate-900 border-white/10 text-slate-300 hover:text-white hover:border-cyan-400/50'
+          }`}
+          title="Mode OBS (Layar Bersih Tanpa Menu UI untuk Live Streaming & Rekaman)"
+        >
+          <Tv className="w-3.5 h-3.5 text-cyan-400" />
+          <span className="hidden sm:inline">MODE OBS</span>
+        </button>
+
+        {/* Speedometer Badge in Header when Simulating */}
+        {isPlaying && (
+          <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-950 border border-cyan-500/50 text-cyan-400 font-mono font-black text-[11px] shadow-[0_0_12px_rgba(6,182,212,0.3)]">
+            <Gauge className="w-3.5 h-3.5 text-cyan-400" />
+            <span>{simSpeed} KM/H</span>
+          </div>
+        )}
 
         <div className="h-4 w-[1px] bg-white/10" />
 
@@ -475,6 +740,8 @@ export const Header: React.FC = () => {
           </button>
         </div>
       </div>
+      {/* Backup & Restore Peta Modal */}
+      <WorldBackupModal isOpen={isBackupOpen} onClose={() => setIsBackupOpen(false)} />
     </header>
   );
 };

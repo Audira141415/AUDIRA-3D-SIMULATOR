@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type WeatherType = 'clear' | 'overcast' | 'sunset' | 'night';
+export type WeatherType = 'clear' | 'overcast' | 'rain' | 'sunset' | 'night';
 
 interface WeatherState {
   timeOfDay: number; // 0.0 to 24.0 (12.0 = Midday, 18.0 = Sunset, 0.0 = Midnight)

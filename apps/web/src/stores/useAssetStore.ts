@@ -31,23 +31,36 @@ export const useAssetStore = create<AssetState>((set, get) => ({
 
     // If searching, search across all assets in the library
     if (query !== '') {
-      return assets.filter(
-        (asset) =>
-          asset.name.toLowerCase().includes(query) ||
-          asset.type.toLowerCase().includes(query) ||
-          (asset.category && asset.category.toLowerCase().includes(query)) ||
-          (asset.subCategory && asset.subCategory.toLowerCase().includes(query))
-      );
+      return assets
+        .filter(
+          (asset) =>
+            asset.name.toLowerCase().includes(query) ||
+            asset.type.toLowerCase().includes(query) ||
+            (asset.category && asset.category.toLowerCase().includes(query)) ||
+            (asset.subCategory && asset.subCategory.toLowerCase().includes(query))
+        )
+        .sort((a, b) => {
+          if (a.isNew && !b.isNew) return -1;
+          if (!a.isNew && b.isNew) return 1;
+          return 0;
+        });
     }
 
     // Normal category and subcategory filtering
-    return assets.filter((asset) => {
+    const filtered = assets.filter((asset) => {
       const matchesCat = asset.category === category;
       const matchesSub =
         category !== 'dekorasi' ||
         subCategoryFilter === 'semua' ||
         asset.subCategory === subCategoryFilter;
       return matchesCat && matchesSub;
+    });
+
+    // Rule: Asset baru (isNew: true) selalu diletakkan di paling depan
+    return filtered.sort((a, b) => {
+      if (a.isNew && !b.isNew) return -1;
+      if (!a.isNew && b.isNew) return 1;
+      return 0;
     });
   },
 }));

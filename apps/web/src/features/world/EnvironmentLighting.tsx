@@ -4,12 +4,16 @@ import { Sky } from '@react-three/drei';
 import * as THREE from 'three';
 import { useWeatherStore } from '../../stores/useWeatherStore';
 import { useEditorStore } from '../../stores/useEditorStore';
+import { useVisualStyleStore } from '../../stores/useVisualStyleStore';
+import { RainParticles } from './RainParticles';
 
 export const EnvironmentLighting: React.FC = () => {
   const timeOfDay = useWeatherStore((s) => s.timeOfDay);
   const autoCycle = useWeatherStore((s) => s.autoCycle);
   const setTimeOfDay = useWeatherStore((s) => s.setTimeOfDay);
+  const weather = useWeatherStore((s) => s.weather);
   const showShadows = useEditorStore((s) => s.showShadows);
+  const visualFilter = useVisualStyleStore((s) => s.visualFilter);
 
   // Auto cycle time if enabled (1 full 24h cycle every 3 minutes)
   useFrame((_, delta) => {
@@ -38,7 +42,17 @@ export const EnvironmentLighting: React.FC = () => {
     let turbidity = 8;
     let rayleigh = 3;
 
-    if (!isDay) {
+    if (weather === 'rain') {
+      // Rain Storm Atmosphere
+      sunColor = '#94a3b8';
+      fogColor = '#334155';
+      sunIntensity = 0.45;
+      ambientIntensity = 0.38;
+      hemiSky = '#475569';
+      hemiGround = '#1e293b';
+      turbidity = 24;
+      rayleigh = 1.2;
+    } else if (!isDay) {
       // Night Mode
       sunColor = '#60a5fa';
       fogColor = '#060a12';
@@ -60,6 +74,45 @@ export const EnvironmentLighting: React.FC = () => {
       rayleigh = 6;
     }
 
+    // Atmospheric Visual Studio Filters Override
+    if (visualFilter === 'cyberpunk-neon') {
+      sunColor = '#00f0ff';
+      sunIntensity = 1.6;
+      ambientIntensity = 0.85;
+      hemiSky = '#06b6d4';
+      hemiGround = '#ec4899';
+      fogColor = '#08081a';
+      turbidity = 16;
+      rayleigh = 4;
+    } else if (visualFilter === 'golden-sunset') {
+      sunColor = '#f59e0b';
+      sunIntensity = 1.8;
+      ambientIntensity = 0.7;
+      hemiSky = '#fed7aa';
+      hemiGround = '#7c2d12';
+      fogColor = '#fdba74';
+      turbidity = 14;
+      rayleigh = 7;
+    } else if (visualFilter === 'moody-fog') {
+      sunColor = '#cbd5e1';
+      sunIntensity = 0.45;
+      ambientIntensity = 0.4;
+      hemiSky = '#64748b';
+      hemiGround = '#334155';
+      fogColor = '#475569';
+      turbidity = 28;
+      rayleigh = 0.8;
+    } else if (visualFilter === 'retro-sepia') {
+      sunColor = '#fef08a';
+      sunIntensity = 1.4;
+      ambientIntensity = 0.55;
+      hemiSky = '#fef3c7';
+      hemiGround = '#78350f';
+      fogColor = '#b45309';
+      turbidity = 12;
+      rayleigh = 3.5;
+    }
+
     return {
       sunPos: [sunX, Math.max(isDay ? 8 : -20, sunY), sunZ] as [number, number, number],
       sunColor,
@@ -72,7 +125,7 @@ export const EnvironmentLighting: React.FC = () => {
       rayleigh,
       isDay,
     };
-  }, [timeOfDay]);
+  }, [timeOfDay, weather, visualFilter]);
 
   return (
     <>
@@ -84,7 +137,17 @@ export const EnvironmentLighting: React.FC = () => {
         mieCoefficient={0.005}
         mieDirectionalG={0.8}
       />
-      <fog attach="fog" args={[lighting.fogColor, 60, 200]} />
+      {/* Fog Atmosphere */}
+      {weather === 'rain' ? (
+        <fog attach="fog" args={['#334155', 180, 1100]} />
+      ) : weather === 'overcast' ? (
+        <fog attach="fog" args={[lighting.fogColor, 600, 1800]} />
+      ) : (
+        <fog attach="fog" args={[lighting.fogColor, 2200, 3500]} />
+      )}
+
+      {/* 3D Rain Particles & Lightning when Weather is Rain */}
+      {weather === 'rain' && <RainParticles />}
 
       {/* Ambient & Hemisphere Lighting */}
       <ambientLight intensity={lighting.ambientIntensity} />
@@ -108,7 +171,8 @@ export const EnvironmentLighting: React.FC = () => {
         shadow-camera-right={60}
         shadow-camera-top={60}
         shadow-camera-bottom={-60}
-        shadow-bias={-0.0004}
+        shadow-bias={-0.00005}
+        shadow-normalBias={0.03}
       />
     </>
   );

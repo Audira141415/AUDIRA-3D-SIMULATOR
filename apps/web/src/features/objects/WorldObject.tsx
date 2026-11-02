@@ -19,6 +19,8 @@ import { useWorldStore } from '../../stores/useWorldStore';
 import { useCameraStore } from '../../stores/useCameraStore';
 import { soundEngine } from '../../features/audio/soundEngine';
 import { ModelRenderer } from './ModelRenderer';
+import { useVehicleFxStore } from '../../stores/useVehicleFxStore';
+import { useFrame } from '@react-three/fiber';
 
 interface WorldObjectProps {
   object: GameObject;
@@ -44,10 +46,18 @@ export const WorldObject: React.FC<WorldObjectProps> = ({ object }) => {
 
   const isSelected = selectedObjectId === object.id;
 
+  useFrame((_, delta) => {
+    if (fxItem?.hydraulicActive) {
+      stepHydraulic(object.id, delta);
+    }
+  });
+
   const setFocusTarget = useCameraStore((s) => s.setFocusTarget);
 
   const [isHovered, setIsHovered] = useState(false);
   const [meshHeight, setMeshHeight] = useState<number | null>(null);
+  const fxItem = useVehicleFxStore((s) => s.vehicleFxMap[object.id]);
+  const stepHydraulic = useVehicleFxStore((s) => s.stepHydraulicProgress);
 
   // Measure actual model bounding box whenever model or scale changes
   useEffect(() => {
@@ -145,8 +155,32 @@ export const WorldObject: React.FC<WorldObjectProps> = ({ object }) => {
     object.category === 'pesawat';
 
   // Convert degrees to radians for rendering
+  const finalScale = useMemo<[number, number, number]>(() => {
+    if (fxItem?.fxType === 'crush') {
+      return [object.scale.x * 1.35, object.scale.y * 0.35, object.scale.z * 1.25];
+    }
+    return [object.scale.x, object.scale.y, object.scale.z];
+  }, [object.scale, fxItem?.fxType]);
+
+  const finalPosition = useMemo<[number, number, number]>(() => {
+    if (fxItem?.fxType === 'explode' && fxItem.explodedOffset) {
+      return [
+        object.position.x + fxItem.explodedOffset.x,
+        Math.max(0, object.position.y + fxItem.explodedOffset.y),
+        object.position.z + fxItem.explodedOffset.z,
+      ];
+    }
+    return [object.position.x, object.position.y, object.position.z];
+  }, [object.position, fxItem?.fxType, fxItem?.explodedOffset]);
+
+    const hydraulicPitch = useMemo(() => {
+    if (!fxItem?.hydraulicActive) return 0;
+    // Sinusoidal smooth hydraulic lift (0 to ~35 degrees)
+    return Math.sin(fxItem.hydraulicProgress * Math.PI) * 0.55;
+  }, [fxItem?.hydraulicActive, fxItem?.hydraulicProgress]);
+
   const rotRad: [number, number, number] = [
-    (object.rotation.x * Math.PI) / 180,
+    ((object.rotation.x * Math.PI) / 180) - hydraulicPitch,
     (object.rotation.y * Math.PI) / 180,
     (object.rotation.z * Math.PI) / 180,
   ];
@@ -155,9 +189,9 @@ export const WorldObject: React.FC<WorldObjectProps> = ({ object }) => {
     <>
       <group
         ref={groupRef}
-        position={[object.position.x, object.position.y, object.position.z]}
+        position={finalPosition}
         rotation={rotRad}
-        scale={[object.scale.x, object.scale.y, object.scale.z]}
+        scale={finalScale}
         onClick={handlePointerDown}
         onPointerDown={handlePointerDown}
         onDoubleClick={handleDoubleClick}
@@ -323,6 +357,20 @@ export const WorldObject: React.FC<WorldObjectProps> = ({ object }) => {
             >
               <Trash2 className="w-4 h-4" />
             </button>
+
+            {/* Vehicle FX & Hydraulics Button */}
+            {isDrivable && (
+              <button
+                onClick={() => {
+                  soundEngine.playUIClick();
+                  useVehicleFxStore.getState().setSelectedVehicleId(object.id);
+                }}
+                className="p-1.5 rounded-lg text-amber-400 hover:text-white hover:bg-amber-500/25 transition-all border border-amber-400/20 active:scale-90"
+                title="Buka Panel Hidrolik & Efek Kerusakan"
+              >
+                <RotateCw className="w-4 h-4 text-amber-300" />
+              </button>
+            )}
 
             {/* Drive Button (Vehicles) */}
             {isDrivable && (

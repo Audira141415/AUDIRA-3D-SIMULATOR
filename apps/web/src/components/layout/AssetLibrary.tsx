@@ -201,6 +201,7 @@ export const AssetLibrary: React.FC = () => {
   const objects = useWorldStore((s) => s.objects);
   const addObject = useWorldStore((s) => s.addObject);
 
+  const allAssets = useAssetStore((s) => s.assets);
   const searchQuery = useAssetStore((s) => s.searchQuery);
   const setSearchQuery = useAssetStore((s) => s.setSearchQuery);
   const subCategoryFilter = useAssetStore((s) => s.subCategoryFilter);
@@ -208,6 +209,7 @@ export const AssetLibrary: React.FC = () => {
   const getAssetsByCategory = useAssetStore((s) => s.getAssetsByCategory);
   const addCustomAsset = useAssetStore((s) => s.addCustomAsset);
 
+  const totalNewCount = allAssets.filter((a) => a.isNew).length;
   const currentAssets = getAssetsByCategory(activeCategory);
   const [isDragOver, setIsDragOver] = useState(false);
   const glbInputRef = useRef<HTMLInputElement>(null);
@@ -285,7 +287,12 @@ export const AssetLibrary: React.FC = () => {
           className="flex items-center gap-2 text-xs font-mono text-cyan-400 hover:text-cyan-300 font-bold transition-all"
         >
           <ChevronUp className="w-4 h-4" />
-          <span>BUKA ASSET LIBRARY ({currentAssets.length} ASET)</span>
+          <span>BUKA ASSET LIBRARY ({allAssets.length} TOTAL ASET)</span>
+          {totalNewCount > 0 && (
+            <span className="px-1.5 py-0.2 rounded-full bg-gradient-to-r from-amber-500 to-rose-500 text-white text-[9px] font-bold animate-pulse">
+              {totalNewCount} BARU
+            </span>
+          )}
         </button>
 
         <div className="font-mono text-[11px] text-slate-400">
@@ -302,6 +309,9 @@ export const AssetLibrary: React.FC = () => {
         <div className="flex items-center gap-1 overflow-x-auto scrollbar-none h-full py-0.5">
           {ASSET_CATEGORIES.map((cat) => {
             const isActive = activeCategory === cat.id;
+            const count = allAssets.filter((a) => a.category === cat.id).length;
+            const newCount = allAssets.filter((a) => a.category === cat.id && a.isNew).length;
+
             return (
               <button
                 key={cat.id}
@@ -309,7 +319,7 @@ export const AssetLibrary: React.FC = () => {
                   soundEngine.playUIClick();
                   setActiveCategory(cat.id);
                 }}
-                className={`h-full px-3.5 rounded-t-sm text-[11px] font-bold tracking-wider uppercase flex items-center gap-1.5 transition-all whitespace-nowrap border-b-2 ${
+                className={`h-full px-3 rounded-t-sm text-[11px] font-bold tracking-wider uppercase flex items-center gap-1.5 transition-all whitespace-nowrap border-b-2 ${
                   isActive
                     ? 'bg-[#00d2ff] text-slate-950 border-[#00d2ff] shadow-[0_0_10px_rgba(0,210,255,0.4)]'
                     : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent'
@@ -317,20 +327,55 @@ export const AssetLibrary: React.FC = () => {
               >
                 {CATEGORY_ICONS[cat.id]}
                 <span>{cat.label}</span>
+                <span
+                  className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold transition-all ${
+                    isActive
+                      ? 'bg-slate-950 text-cyan-300'
+                      : 'bg-white/10 text-slate-400 group-hover:text-white'
+                  }`}
+                >
+                  {count}
+                </span>
+                {newCount > 0 && (
+                  <span
+                    className={`px-1 py-0.2 rounded text-[7.5px] font-black tracking-tighter ${
+                      isActive ? 'bg-amber-400 text-slate-950' : 'bg-rose-500/90 text-white animate-pulse'
+                    }`}
+                    title={`${newCount} aset baru`}
+                  >
+                    +{newCount}
+                  </span>
+                )}
               </button>
             );
           })}
         </div>
 
-        {/* Drawer Collapse Button */}
-        <button
-          onClick={toggleAssetLibrary}
-          className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1 text-[11px] font-mono"
-          title="Tutup Asset Library"
-        >
-          <span className="hidden sm:inline">Minimize</span>
-          <ChevronDown className="w-4 h-4" />
-        </button>
+        {/* Right Info & Drawer Collapse Button */}
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <div className="hidden sm:flex items-center gap-1.5 text-[11px] font-mono bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10">
+            <span className="text-slate-400">Total:</span>
+            <span className="text-cyan-300 font-bold">{allAssets.length} Aset</span>
+            {totalNewCount > 0 && (
+              <>
+                <span className="text-slate-600">|</span>
+                <span className="text-amber-400 font-bold flex items-center gap-1">
+                  <Sparkles className="w-2.5 h-2.5" />
+                  {totalNewCount} Baru
+                </span>
+              </>
+            )}
+          </div>
+
+          <button
+            onClick={toggleAssetLibrary}
+            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1 text-[11px] font-mono"
+            title="Tutup Asset Library"
+          >
+            <span className="hidden sm:inline">Minimize</span>
+            <ChevronDown className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* 2. SUB-BAR: SEARCH & FILTERS */}
@@ -353,17 +398,23 @@ export const AssetLibrary: React.FC = () => {
             <div className="flex items-center gap-1">
               {DEKORASI_SUBCATEGORIES.map((sub) => {
                 const isSubActive = subCategoryFilter === sub.id;
+                const subCount =
+                  sub.id === 'semua'
+                    ? allAssets.filter((a) => a.category === 'dekorasi').length
+                    : allAssets.filter((a) => a.category === 'dekorasi' && a.subCategory === sub.id).length;
+
                 return (
                   <button
                     key={sub.id}
                     onClick={() => setSubCategoryFilter(sub.id)}
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition-all whitespace-nowrap ${
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition-all whitespace-nowrap flex items-center gap-1 ${
                       isSubActive
                         ? 'bg-cyan-500/25 text-cyan-300 border border-cyan-400/50 font-bold'
                         : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                     }`}
                   >
-                    {sub.label}
+                    <span>{sub.label}</span>
+                    <span className="text-[9px] font-mono opacity-70">({subCount})</span>
                   </button>
                 );
               })}
@@ -446,11 +497,21 @@ export const AssetLibrary: React.FC = () => {
               className={`w-28 h-[94px] flex-shrink-0 rounded-xl p-1.5 flex flex-col justify-between cursor-pointer transition-all duration-150 border relative group ${
                 isSelectedForPlacement
                   ? 'bg-cyan-500/20 border-cyan-400 shadow-[0_0_14px_rgba(6,182,212,0.4)] scale-[1.02]'
+                  : asset.isNew
+                  ? 'bg-gradient-to-b from-slate-900/90 to-amber-950/20 hover:from-slate-800 hover:to-amber-950/40 border-amber-500/40 hover:border-amber-400/80 shadow-[0_0_10px_rgba(245,158,11,0.15)]'
                   : 'bg-slate-900/70 hover:bg-slate-800/90 border-white/5 hover:border-white/20'
               }`}
             >
               {/* Asset Thumbnail */}
               <div className="w-full h-12 rounded-lg flex items-center justify-center relative overflow-hidden bg-slate-950/60 border border-white/5">
+                {/* NEW BADGE */}
+                {asset.isNew && (
+                  <span className="absolute top-0.5 left-0.5 px-1.5 py-0.2 rounded bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white font-black text-[7.5px] tracking-wider uppercase shadow-[0_0_8px_rgba(244,63,94,0.7)] border border-white/30 z-10 flex items-center gap-0.5 animate-pulse">
+                    <Sparkles className="w-2 h-2" />
+                    <span>NEW</span>
+                  </span>
+                )}
+
                 {asset.thumbnailUrl ? (
                   <img
                     src={asset.thumbnailUrl}
@@ -480,9 +541,13 @@ export const AssetLibrary: React.FC = () => {
                 <div className="text-[10px] font-bold text-slate-200 truncate" title={asset.name}>
                   {asset.name}
                 </div>
-                <div className="text-[8px] font-mono text-slate-400 uppercase tracking-wider flex justify-between">
-                  <span>{asset.subCategory || asset.category}</span>
-                  {isSelectedForPlacement && <span className="text-cyan-400 font-bold">READY</span>}
+                <div className="text-[8px] font-mono text-slate-400 uppercase tracking-wider flex justify-between items-center">
+                  <span className="truncate">{asset.subCategory || asset.category}</span>
+                  {isSelectedForPlacement ? (
+                    <span className="text-cyan-400 font-bold">READY</span>
+                  ) : asset.isNew ? (
+                    <span className="text-amber-400 font-bold text-[7px] bg-amber-500/10 px-1 py-0.2 rounded border border-amber-500/30">BARU</span>
+                  ) : null}
                 </div>
               </div>
             </div>

@@ -58,6 +58,7 @@ export interface AssetDefinition {
   color?: string;
   thumbnailUrl?: string;
   isCustom?: boolean;
+  isNew?: boolean;
   targetSize?: number;
 }
 

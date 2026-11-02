@@ -1,4 +1,4 @@
-import React, { Suspense, useMemo, useRef } from 'react';
+import React, { Suspense, useMemo, useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { useTexture, Grid } from '@react-three/drei';
 import { snapToGrid } from '@audira/game-core';
@@ -8,6 +8,8 @@ import { useWorldStore } from '../../stores/useWorldStore';
 import { useSelectionStore } from '../../stores/useSelectionStore';
 import { useCameraStore } from '../../stores/useCameraStore';
 import { soundEngine } from '../../features/audio/soundEngine';
+import { useVehicleRunStore } from '../../stores/useVehicleRunStore';
+import { useTerrainSculptStore } from '../../stores/useTerrainSculptStore';
 
 // PBR Grass Material with FS22 textures & natural green meadow tint
 const PBRGrassMaterial: React.FC = () => {
@@ -52,8 +54,32 @@ export const Terrain: React.FC = () => {
   const selectObject = useSelectionStore((s) => s.selectObject);
   const setFocusTarget = useCameraStore((s) => s.setFocusTarget);
   const worldSize = useWorldStore((s) => s.worldSize) || 300;
+  const isSculptActive = useTerrainSculptStore((s) => s.isSculptActive);
+  const heightMap = useTerrainSculptStore((s) => s.heightMap);
+  const getTerrainHeight = useTerrainSculptStore((s) => s.getTerrainHeight);
+  const setCursorPosition = useTerrainSculptStore((s) => s.setCursorPosition);
 
   const pointerDownCoord = useRef<{ x: number; y: number } | null>(null);
+  const geomRef = useRef<THREE.PlaneGeometry>(null);
+
+  // Update vertex heights dynamically whenever heightMap mutates
+  useEffect(() => {
+    if (!geomRef.current) return;
+    const pos = geomRef.current.attributes.position;
+    if (!pos) return;
+
+    for (let i = 0; i < pos.count; i++) {
+      const lx = pos.getX(i);
+      const ly = pos.getY(i);
+      // Plane is rotated -PI/2 around X: local X is world X, local Y is world -Z, local Z is world Y (height)
+      const wx = lx;
+      const wz = -ly;
+      const h = getTerrainHeight(wx, wz);
+      pos.setZ(i, h);
+    }
+    pos.needsUpdate = true;
+    geomRef.current.computeVertexNormals();
+  }, [heightMap, getTerrainHeight]);
 
   const handlePointerDown = (e: any) => {
     pointerDownCoord.current = { x: e.clientX, y: e.clientY };
@@ -84,6 +110,20 @@ export const Terrain: React.FC = () => {
     e.stopPropagation();
 
     // If we have an active asset selected for placement
+    // 00. If Terrain Sculpting mode is active
+    if (isSculptActive) {
+      return;
+    }
+
+    // 0. If Waypoint Path Drawing mode is active in RUN mode
+    const { pathEdit, pathOwner, addPathPoint } = useVehicleRunStore.getState();
+    if (pathEdit && pathOwner) {
+      const clickPoint = e.point;
+      addPathPoint({ x: clickPoint.x, y: 0.12, z: clickPoint.z });
+      soundEngine.playUIClick();
+      return;
+    }
+
     if (placingAsset) {
       const clickPoint = e.point;
       const rawPos = { x: clickPoint.x, y: 0, z: clickPoint.z };
@@ -140,28 +180,40 @@ export const Terrain: React.FC = () => {
         position={[0, 0, 0]}
         receiveShadow
         onPointerDown={handlePointerDown}
+        onPointerMove={(e) => {
+          if (isSculptActive) {
+            setCursorPosition({ x: e.point.x, y: e.point.y, z: e.point.z });
+          }
+        }}
+        onPointerLeave={() => {
+          if (isSculptActive) {
+            setCursorPosition(null);
+          }
+        }}
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
       >
-        <planeGeometry args={[2000, 2000]} />
+        <planeGeometry ref={geomRef} args={[worldSize, worldSize, 120, 120]} />
         <Suspense fallback={<meshStandardMaterial color="#689f38" roughness={0.85} />}>
           <PBRGrassMaterial />
         </Suspense>
       </mesh>
 
-      {/* 2. Adaptive Anti-Aliased Grid (Fades distant lines automatically so grass stays 100% green without dark moire) */}
+      {/* 2. Adaptive Anti-Aliased Grid (Fades distant lines smoothly so landscape stays 100% clean without moire / blinking) */}
       {showGrid && (
         <Grid
-          position={[0, 0.015, 0]}
+          position={[0, 0.035, 0]}
           args={[worldSize, worldSize]}
           cellSize={1}
-          cellThickness={0.6}
+          cellThickness={0.5}
           cellColor="#ffffff"
           sectionSize={10}
-          sectionThickness={1.2}
+          sectionThickness={1.0}
           sectionColor="#22d3ee"
-          fadeDistance={220}
-          fadeStrength={1.5}
+          fadeDistance={90}
+          fadeStrength={2.0}
+          fadeFrom={0}
+          renderOrder={1}
         />
       )}
     </group>

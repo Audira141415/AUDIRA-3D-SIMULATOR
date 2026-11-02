@@ -1,0 +1,20 @@
+[package]
+name = "audira_3d_simulator"
+version = "1.0.0"
+description = "AUDIRA 3D Construction Simulator Desktop Application"
+authors = ["Agus Dwi Rianto (AUDIRA) <agusdwirianto@gmail.com>"]
+edition = "2021"
+
+[lib]
+name = "audira_3d_simulator_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.7.4" }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+log = "0.4"
+tauri = { version = "2.12.5" }
+tauri-plugin-log = "2"

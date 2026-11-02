@@ -1,0 +1,12 @@
+{
+    "audira-auto-skill-injector":  {
+                                       "PreInvocation":  [
+                                                             {
+                                                                 "command":  "node -e \"const fs=require(\u0027fs\u0027);for(const d of[\u0027F:\u0027,\u0027D:\u0027,\u0027E:\u0027,\u0027C:\u0027,\u0027G:\u0027]){const p=d+\u0027/AUDIRA-ALL-SKILL/scripts/auto-skill-injector.js\u0027;if(fs.existsSync(p)){require(p);break;}}\"",
+                                                                 "timeout":  10,
+                                                                 "type":  "command"
+                                                             }
+                                                         ],
+                                       "enabled":  true
+                                   }
+}

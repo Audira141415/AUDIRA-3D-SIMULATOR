@@ -22,3 +22,18 @@ pnpm-debug.log*
 # OS files
 .DS_Store
 Thumbs.db
+
+# Asset folder junctions (mirrors of public/models and public/thumbs)
+assets/models
+assets/thumbs
+assets/fs22_mods_raw/
+apps/web/public/assets
+
+# Models exceeding GitHub 50MB-100MB limit
+apps/web/public/models/bangpay/albert-park-circuit-melbourne-2018-layout.glb
+apps/web/public/models/bangpay/big-environment-map.glb
+apps/web/public/models/bangpay/cartoon-village-combined.glb
+
+# Rust Tauri build cache
+apps/desktop/src-tauri/target/
+target/

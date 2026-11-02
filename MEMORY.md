@@ -50,9 +50,31 @@
 - [x] Undo (`Ctrl+Z`) & Redo (`Ctrl+Y`) command pattern
 - [x] JSON World Save/Load & LocalStorage sync
 
-### Sprint V2: Physics & Vehicle Kinematics (Status: Next / Planned)
+### Sprint Kreator: Adopsi 10 Fitur Bang Pay Magic Pro (Status: Active In-Progress)
+- [x] FEAT-18: Songmaker Studio (Lirik, BPM, Genre, Progresi Akor & Audio Synth)
+- [x] FEAT-19: Video Editor & Visualizer (Multi-track Timeline, 16:9 / 9:16 Shorts, Spectrum Overlay)
+- [x] FEAT-20: Audio Editor & Mastering DSP (Real-time Parametric EQ, Compressor, Reverb, Limiter)
+- [x] FEAT-21: Murotal & Caption Quran (Surah/Ayat Picker, Calligraphy Text, Qari Audio Stream)
+- [x] FEAT-22: Audio Metadata & ID3 Editor (Tag Inspector, ID3v2 Editing, Artwork Preview)
+- [x] FEAT-23: Suno Track Downloader (Parser URL Suno, Audio MP3 & Video MP4 Extractor)
+- [x] FEAT-24: Album Gen & Vinyl Player (Piringan Hitam 3D, Tracklist Manager, Continuous Play)
+- [x] FEAT-25: Smart YT Creator Optimizer (SEO Title Scorer, Tag Finder, Description Builder)
+- [x] FEAT-26: VO GEN AI Text-to-Speech (Multi-Actor Script, Web Speech API Voiceover)
+- [x] FEAT-27: AI Bang Pay Studio (Prompt Lab Text-to-Image/Video, Direct Link ke Forge3D Mesh)
+- [x] Master UI Hub: `KreatorStudioModal.tsx` & Header Quick Launch Button
+
+### Sprint V2: Physics & Vehicle Kinematics (Status: Active In-Progress)
+- [x] FEAT-28: Sistem Pencahayaan Dinamis Kendaraan 3D (`VehicleDynamicLights.tsx`: Dual SpotLight Headlights, High Beam, Red Brake Glow, Reverse Light, Amber Blinking Turn Signals)
+- [x] FEAT-29: Dynamic Tire Dust & Skid Particle Trail (`VehicleParticleTrail.tsx` partikel suspensi dan gesekan ban)
+- [x] FEAT-30: Integrasi Shortcut Lampu & Sein (`L`, `K`, `Z`, `X`) serta HUD Controls Hint
+- [x] FEAT-31: Integrasi Multi-Agent Agency Orchestration (`.agents/brain/MULTI_AGENT_AGENCY_ORCHESTRATION.md` & `.agents/skills/audira-multiagent-orchestrator/SKILL.md`)
+- [x] FEAT-32: Cuaca Hujan Tropis 3D Dinamis (`RainParticles.tsx` 2000 partikel hujan, drift angin, kilatan petir, dan sound ambient hujan/guntur Web Audio)
+- [x] FEAT-33: Optimalisasi Performa — Penghapusan kalkulasi CPU IslandWater untuk menjamin kestabilan 60 FPS tanpa lag di WebGL
+- [x] FEAT-34: Deteksi Benturan Rintangan & Rebound Physics (`VehicleSimulator.tsx` deteksi tabrakan obstacle, pantulan elastis, camera impact jolt, dan audio crash bump)
+- [x] FEAT-35: Turbo Nitro Boost (`Shift`) & Cyan Exhaust Flame (`VehicleParticleTrail.tsx` cyan flame particles, camera FOV speed punch, suara jet whine, dan HUD Nitro gauge)
+- [x] FEAT-36: Modern UI/UX Overhaul & HUD De-cluttering (Auto-hide editor panels saat mode mengemudi, Supercar Cockpit Dashboard di bottom-left, Top-Centered Camera Pills, Floating Quick Dock di kanan, dan minimal status bar)
+- [x] Sistem kendali kemudi kendaraan & kinematika real-time (WASD)
 - [ ] Integrasi `@react-three/rapier` untuk physical rigid bodies
-- [ ] Sistem kendali kemudi kendaraan & putaran roda real-time (WASD)
 - [ ] Terrain sculpting (raise, lower, flatten)
 - [ ] Spline road builder dengan penempatan modular
 

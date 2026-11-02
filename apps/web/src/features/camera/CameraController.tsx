@@ -30,6 +30,14 @@ export const CameraController: React.FC = () => {
   const resetTrigger = useCameraStore((s) => s.resetTrigger);
   const panDelta = useCameraStore((s) => s.panDelta);
 
+  const trackingAngle = useCameraStore((s) => s.trackingAngle);
+  const trackingDistance = useCameraStore((s) => s.trackingDistance);
+  const trackingHeight = useCameraStore((s) => s.trackingHeight);
+  const orbitSpeed = useCameraStore((s) => s.orbitSpeed);
+  const currentOrbitAngle = useRef<number>(0);
+  const editorDirectorTimer = useRef<number>(0);
+  const editorDirectorAngleIdx = useRef<number>(0);
+
   // Target transition vectors for smooth camera moves
   const targetCamPos = useRef<THREE.Vector3 | null>(null);
   const targetLookAt = useRef<THREE.Vector3 | null>(null);
@@ -139,8 +147,8 @@ export const CameraController: React.FC = () => {
     prevIsPlaying.current = isPlaying;
   }, [isPlaying, camera]);
 
-  useFrame(() => {
-    // Sync camera azimuthal heading for the HUD compass
+  useFrame((_, delta) => {
+    // 1. Sync camera azimuthal heading for the HUD compass
     if (controlsRef.current) {
       const heading = controlsRef.current.getAzimuthalAngle();
       if (Math.abs(heading - lastHeadingRef.current) > 0.02) {
@@ -149,7 +157,110 @@ export const CameraController: React.FC = () => {
       }
     }
 
-    // Smoothly animate towards target preset or focus target if active
+    // 2. Multi-Angle Automatic Object Tracking in Editor Mode
+    if (!isPlaying && trackingAngle !== 'free') {
+      const activeObj = selectedObjectId
+        ? objects.find((o) => o.id === selectedObjectId)
+        : objects.length > 0
+        ? objects[objects.length - 1]
+        : null;
+
+      const targetPos = activeObj
+        ? new THREE.Vector3(activeObj.position.x, activeObj.position.y, activeObj.position.z)
+        : new THREE.Vector3(0, 0, 0);
+
+      const rotY = activeObj?.rotation?.y || 0;
+      const forwardX = Math.sin(rotY);
+      const forwardZ = Math.cos(rotY);
+      const rightX = Math.cos(rotY);
+      const rightZ = -Math.sin(rotY);
+
+      const desiredCamPos = new THREE.Vector3();
+
+      if (trackingAngle === 'chase') {
+        desiredCamPos.set(
+          targetPos.x - forwardX * trackingDistance,
+          targetPos.y + trackingHeight,
+          targetPos.z - forwardZ * trackingDistance
+        );
+      } else if (trackingAngle === 'front') {
+        desiredCamPos.set(
+          targetPos.x + forwardX * trackingDistance,
+          targetPos.y + trackingHeight * 0.7,
+          targetPos.z + forwardZ * trackingDistance
+        );
+      } else if (trackingAngle === 'side-left') {
+        desiredCamPos.set(
+          targetPos.x - rightX * trackingDistance,
+          targetPos.y + trackingHeight * 0.8,
+          targetPos.z - rightZ * trackingDistance
+        );
+      } else if (trackingAngle === 'side-right') {
+        desiredCamPos.set(
+          targetPos.x + rightX * trackingDistance,
+          targetPos.y + trackingHeight * 0.8,
+          targetPos.z + rightZ * trackingDistance
+        );
+      } else if (trackingAngle === 'drone') {
+        desiredCamPos.set(
+          targetPos.x,
+          targetPos.y + trackingDistance * 1.6,
+          targetPos.z + 0.1
+        );
+      } else if (trackingAngle === 'low-stunt') {
+        desiredCamPos.set(
+          targetPos.x - forwardX * (trackingDistance * 0.6) + rightX * 2,
+          targetPos.y + 0.6,
+          targetPos.z - forwardZ * (trackingDistance * 0.6) + rightZ * 2
+        );
+      } else if (trackingAngle === 'director') {
+        editorDirectorTimer.current += delta;
+        if (editorDirectorTimer.current > 5.0) {
+          editorDirectorTimer.current = 0;
+          editorDirectorAngleIdx.current = (editorDirectorAngleIdx.current + 1) % 6;
+        }
+        currentOrbitAngle.current += delta * orbitSpeed;
+
+        switch (editorDirectorAngleIdx.current) {
+          case 0:
+            desiredCamPos.set(targetPos.x - forwardX * trackingDistance, targetPos.y + trackingHeight, targetPos.z - forwardZ * trackingDistance);
+            break;
+          case 1:
+            desiredCamPos.set(targetPos.x + rightX * trackingDistance, targetPos.y + trackingHeight * 0.8, targetPos.z + rightZ * trackingDistance);
+            break;
+          case 2:
+            desiredCamPos.set(targetPos.x - forwardX * (trackingDistance * 0.6) + rightX * 2, targetPos.y + 0.6, targetPos.z - forwardZ * (trackingDistance * 0.6) + rightZ * 2);
+            break;
+          case 3:
+            desiredCamPos.set(targetPos.x + forwardX * trackingDistance, targetPos.y + trackingHeight * 0.7, targetPos.z + forwardZ * trackingDistance);
+            break;
+          case 4:
+            desiredCamPos.set(targetPos.x, targetPos.y + trackingDistance * 1.6, targetPos.z + 0.1);
+            break;
+          case 5:
+          default: {
+            const ox = Math.sin(currentOrbitAngle.current) * trackingDistance;
+            const oz = Math.cos(currentOrbitAngle.current) * trackingDistance;
+            desiredCamPos.set(targetPos.x + ox, targetPos.y + trackingHeight, targetPos.z + oz);
+            break;
+          }
+        }
+      } else if (trackingAngle === 'orbit-360') {
+        currentOrbitAngle.current += delta * orbitSpeed;
+        const ox = Math.sin(currentOrbitAngle.current) * trackingDistance;
+        const oz = Math.cos(currentOrbitAngle.current) * trackingDistance;
+        desiredCamPos.set(targetPos.x + ox, targetPos.y + trackingHeight, targetPos.z + oz);
+      }
+
+      camera.position.lerp(desiredCamPos, 0.08);
+      if (controlsRef.current) {
+        controlsRef.current.target.lerp(new THREE.Vector3(targetPos.x, targetPos.y + 1.0, targetPos.z), 0.08);
+        controlsRef.current.update();
+      }
+      return;
+    }
+
+    // 3. Smoothly animate towards target preset or focus target if active
     if (targetCamPos.current && targetLookAt.current && controlsRef.current) {
       camera.position.lerp(targetCamPos.current, 0.12);
       controlsRef.current.target.lerp(targetLookAt.current, 0.12);
@@ -171,7 +282,7 @@ export const CameraController: React.FC = () => {
     <DreiOrbitControls
       ref={controlsRef}
       makeDefault
-      enabled={!isPlaying}
+      enabled={!isPlaying && trackingAngle === 'free'}
       enableDamping={true}
       dampingFactor={0.08}
       screenSpacePanning={true}

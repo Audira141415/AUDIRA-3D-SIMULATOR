@@ -2,14 +2,18 @@
   "name": "audira-3d-construction-simulator-monorepo",
   "version": "1.0.0",
   "private": true,
-  "description": "3D World Builder + Construction Simulator in Browser",
+  "description": "3D World Builder + Construction Simulator (Web & Desktop)",
   "scripts": {
     "dev": "pnpm --filter @audira/web dev",
     "dev:web": "pnpm --filter @audira/web dev",
     "dev:api": "pnpm --filter @audira/api dev",
+    "dev:desktop": "pnpm --filter @audira/desktop dev",
+    "scrape:assets": "node scripts/auto-scrape-bangpay.mjs",
     "build": "pnpm --filter @audira/web build",
     "build:all": "pnpm -r run build",
-    "lint": "pnpm -r run lint"
+    "build:desktop": "pnpm --filter @audira/desktop build",
+    "lint": "pnpm -r run lint",
+    "test": "pnpm --filter @audira/web test"
   },
   "packageManager": "pnpm@9.15.0"
 }

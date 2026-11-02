@@ -1,5 +1,5 @@
-import React, { Suspense, useMemo } from 'react';
-import { useGLTF } from '@react-three/drei';
+import React, { Suspense, useMemo, useRef, useEffect } from 'react';
+import { useGLTF, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { ProceduralModel } from './ProceduralModel';
@@ -59,6 +59,16 @@ const GLBModel: React.FC<{
   targetSize?: number;
 }> = ({ url, fallbackType, fallbackColor, category, targetSize }) => {
   const gltf = useGLTF(url);
+  const groupRef = useRef<THREE.Group>(null);
+  const { actions, names } = useAnimations(gltf.animations, groupRef);
+
+  useEffect(() => {
+    if (names && names.length > 0) {
+      names.forEach((name) => {
+        actions[name]?.reset().fadeIn(0.2).play();
+      });
+    }
+  }, [actions, names]);
 
   const clonedScene = useMemo(() => {
     if (!gltf || !gltf.scene) return null;
@@ -74,8 +84,22 @@ const GLBModel: React.FC<{
     const isCharacter =
       category === 'karakter' ||
       (category === 'dekorasi' &&
-        (url.includes('spider') || url.includes('iron') || url.includes('hulk') || url.includes('knight')));
-    const isRoad = category === 'road' || url.includes('road') || url.includes('ramp');
+        (url.includes('spider') ||
+          url.includes('iron') ||
+          url.includes('hulk') ||
+          url.includes('knight') ||
+          url.includes('bumblebee') ||
+          url.includes('optimus') ||
+          url.includes('tranformer') ||
+          url.includes('eggs')));
+    const isRoad =
+      category === 'road' ||
+      url.includes('road') ||
+      url.includes('ramp') ||
+      url.includes('bridge') ||
+      url.includes('lintasan') ||
+      url.includes('torus') ||
+      url.includes('floor');
 
     // Target size in real-world metric meters
     const target = getResolvedTargetSize(url, category, targetSize);
@@ -100,9 +124,10 @@ const GLBModel: React.FC<{
     clone.position.z = -center.z * normScale;
 
     // Ground Level Alignment: Titik terbawah model tepat berada di y = 0
-    // Kecualikan prefab map yang memiliki elemen air / bawah tanah
-    if (!isPrefabMap && Number.isFinite(box.min.y)) {
-      clone.position.y = -box.min.y * normScale;
+    // Berikan sedikit offset 4cm pada map agar aspal/jalan tidak bertabrakan Z-fighting dengan lantai rumput
+    if (Number.isFinite(box.min.y)) {
+      const mapLift = isPrefabMap ? 0.04 : 0;
+      clone.position.y = -box.min.y * normScale + mapLift;
     }
 
     clone.traverse((child: any) => {
@@ -119,7 +144,11 @@ const GLBModel: React.FC<{
     return <ProceduralModel type={fallbackType} color={fallbackColor} />;
   }
 
-  return <primitive object={clonedScene} />;
+  return (
+    <group ref={groupRef}>
+      <primitive object={clonedScene} />
+    </group>
+  );
 };
 
 export const ModelRenderer: React.FC<ModelRendererProps> = ({
