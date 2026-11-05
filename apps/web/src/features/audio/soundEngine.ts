@@ -753,6 +753,31 @@ class SoundEngine {
       osc.stop(t + i * 0.07 + 0.25);
     });
   }
+
+  // Play error buzz (invalid action)
+  public playError() {
+    const ctx = this.initCtx();
+    if (!ctx || this.isMuted || !this.masterGain) return;
+    const t = ctx.currentTime;
+    [320, 240].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.2, t + i * 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.1 + 0.12);
+      osc.connect(gain);
+      gain.connect(this.masterGain!);
+      osc.start(t + i * 0.1);
+      osc.stop(t + i * 0.1 + 0.14);
+    });
+  }
+
+  // Play carnival / background ambient music
+  public playCarnivalMusic() {
+    const carnivalTrack = 'https://assets.mixkit.co/music/preview/mixkit-carnival-parade-497.mp3';
+    this.playMusic(carnivalTrack);
+  }
 }
 
 export const soundEngine = new SoundEngine();

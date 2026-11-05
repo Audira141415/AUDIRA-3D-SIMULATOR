@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { TransformMode, AssetCategory, AssetDefinition } from '@audira/shared';
 
 interface EditorState {
+  currentView: 'home' | 'editor';
   transformMode: TransformMode;
   activeTool: 'select' | 'move' | 'rotate' | 'scale' | 'terrain' | 'road' | 'building';
   gridSnap: boolean;
@@ -24,6 +25,7 @@ interface EditorState {
   isAssetLibraryOpen: boolean;
   activePropertiesTab: 'inspector' | 'outliner';
 
+  setCurrentView: (view: 'home' | 'editor') => void;
   setTransformMode: (mode: TransformMode) => void;
   setActiveTool: (tool: 'select' | 'move' | 'rotate' | 'scale' | 'terrain' | 'road' | 'building') => void;
   toggleGridSnap: () => void;
@@ -43,6 +45,7 @@ interface EditorState {
 }
 
 export const useEditorStore = create<EditorState>((set) => ({
+  currentView: 'home',
   transformMode: 'select',
   activeTool: 'select',
   gridSnap: true,
@@ -62,6 +65,7 @@ export const useEditorStore = create<EditorState>((set) => ({
   isAssetLibraryOpen: true,
   activePropertiesTab: 'inspector',
 
+  setCurrentView: (view) => set({ currentView: view }),
   setTransformMode: (mode) =>
     set({
       transformMode: mode,

@@ -31,6 +31,8 @@ import {
   Layers,
   Database,
   DownloadCloud,
+  Home,
+  KeyRound,
 } from 'lucide-react';
 import { useWorldStore } from '../../stores/useWorldStore';
 import { useSelectionStore } from '../../stores/useSelectionStore';
@@ -52,6 +54,7 @@ import { useKreatorStudioStore } from '../../stores/useKreatorStudioStore';
 import { exportWorldToJSON, saveWorldToLocalStorage, loadWorldFromLocalStorage } from '../../features/save/saveManager';
 import { soundEngine } from '../../features/audio/soundEngine';
 import { useScreenRecorder } from '../../features/recording/useScreenRecorder';
+import { useLicenseStore } from '../../stores/useLicenseStore';
 
 export const Header: React.FC = () => {
   const projectName = useWorldStore((s) => s.projectName);
@@ -192,8 +195,20 @@ export const Header: React.FC = () => {
 
   return (
     <header className="h-12 glass-panel border-b border-white/10 px-3 flex items-center justify-between relative z-50 pointer-events-auto select-none bg-[#070b12]/95 backdrop-blur-md">
-      {/* 1. BRAND & PROJECT INFO */}
-      <div className="flex items-center gap-3">
+            {/* 1. BRAND & PROJECT INFO */}
+      <div className="flex items-center gap-2.5">
+        {/* Home / Landing Page Button */}
+        <button
+          onClick={() => {
+            soundEngine.playUIClick();
+            useEditorStore.getState().setCurrentView('home');
+          }}
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/25 border border-cyan-400/40 text-cyan-300 font-extrabold text-xs transition-all shadow-[0_0_10px_rgba(6,182,212,0.2)] active:scale-95 cursor-pointer"
+          title="Kembali ke Halaman Beranda (Landing Page)"
+        >
+          <Home className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">BERANDA</span>
+        </button>
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500/30 to-blue-600/30 border border-cyan-400/50 flex items-center justify-center text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.3)]">
             <Boxes className="w-4 h-4" />
@@ -628,7 +643,25 @@ export const Header: React.FC = () => {
         </button>
 
         {/* Quality Selector Badge */}
-        <QualityToggle />
+                <QualityToggle />
+
+        {/* Lisensi Kreator Button */}
+        <button
+          type="button"
+          onClick={() => {
+            soundEngine.playUIClick();
+            useLicenseStore.getState().setModalOpen(true);
+          }}
+          className={`px-2 py-1 rounded-lg border text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+            useLicenseStore.getState().isLicensed
+              ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/50'
+              : 'bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border-amber-400/40'
+          }`}
+          title="Buka Pengaturan Lisensi Kreator VIP"
+        >
+          <KeyRound className="w-3.5 h-3.5 text-amber-400" />
+          <span className="hidden xl:inline">LISENSI</span>
+        </button>
 
         {/* Mode OBS Clean View Toggle Button (Matching Screenshot) */}
         <button
