@@ -62,3 +62,4 @@ echo [INFO] Aplikasi desktop telah ditutup.
 echo Untuk membersihkan semua proses background, jalankan stop.bat
 echo ===============================================================================
 pause
+

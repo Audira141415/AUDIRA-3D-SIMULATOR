@@ -113,12 +113,12 @@ export async function scrapeBangPayAssets(options: { force?: boolean } = {}): Pr
     ].map((m) => m[1]);
 
     // Find routes bundle
-    const routesScript = scriptMatches.find((s) => s.includes('routes-')) || '/assets/routes-DIr_7Cu6.js';
+    const routesScript = scriptMatches.find((s) => s.includes('routes-')) || '/assets/routes-C6wagoiJ.js';
     addLog(`Menganalisis bundle rute: ${routesScript}...`);
 
     // 3. Fetch routes bundle to find active Simulator bundle
     const routesRes = await fetch(`${baseUrl}${routesScript.startsWith('/') ? '' : '/'}${routesScript}`);
-    let simulatorBundle = '/assets/Simulator-vdE3h7Iy.js';
+    let simulatorBundle = '/assets/Simulator-CqD9D8VY.js';
 
     if (routesRes.ok) {
       const routesText = await routesRes.text();

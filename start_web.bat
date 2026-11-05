@@ -49,3 +49,4 @@ echo - API & Copilot : http://localhost:3000
 echo Untuk menghentikan simulator, jalankan stop.bat
 echo ===============================================================================
 pause
+

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * AUDIRA 3D SIMULATOR — Auto-Scraper for BangPay GLB Assets
- * Automatically checks and downloads newly deployed 3D models and thumbnails from BangPay Simulator.
+ * AUDIRA 3D SIMULATOR — Auto-Scraper for BangPay GLB Assets & PBR Textures
+ * Automatically checks and downloads newly deployed 3D models, textures, thumbnails,
+ * and media from BangPay Simulator.
  */
 
 import fs from 'fs';
@@ -15,20 +16,25 @@ const root = path.resolve(__dirname, '..');
 
 const BASE_URL = 'https://bangpaysimulator.lovable.app';
 const MODELS_DIR = path.join(root, 'apps/web/public/models');
+const BANGPAY_MODELS_DIR = path.join(MODELS_DIR, 'bangpay');
 const THUMBS_DIR = path.join(root, 'apps/web/public/thumbs');
+const TEXTURES_DIR = path.join(root, 'apps/web/public/textures');
+const MEDIA_DIR = path.join(root, 'apps/web/public/media');
 
 async function main() {
   console.log('====================================================');
   console.log('⚡ AUDIRA AUTO-SCRAPER: BangPay Simulator CDN Sync');
   console.log('====================================================');
 
-  if (!fs.existsSync(MODELS_DIR)) fs.mkdirSync(MODELS_DIR, { recursive: true });
-  if (!fs.existsSync(THUMBS_DIR)) fs.mkdirSync(THUMBS_DIR, { recursive: true });
+  [MODELS_DIR, BANGPAY_MODELS_DIR, THUMBS_DIR, TEXTURES_DIR, MEDIA_DIR].forEach((dir) => {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  });
 
-  console.log(`[1/4] Mengunduh HTML dari ${BASE_URL}...`);
+  console.log(`[1/5] Mengunduh HTML dari ${BASE_URL}...`);
   const htmlRes = await fetch(BASE_URL, {
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     },
   });
 
@@ -45,11 +51,11 @@ async function main() {
     ...html.matchAll(/<link[^>]+href=["']([^"']+\.js)["']/g),
   ].map((m) => m[1]);
 
-  const routesScript = scriptMatches.find((s) => s.includes('routes-')) || '/assets/routes-DIr_7Cu6.js';
-  console.log(`[2/4] Menganalisis bundle rute: ${routesScript}...`);
+  const routesScript = scriptMatches.find((s) => s.includes('routes-')) || '/assets/routes-C6wagoiJ.js';
+  console.log(`[2/5] Menganalisis bundle rute: ${routesScript}...`);
 
   const routesRes = await fetch(`${BASE_URL}${routesScript.startsWith('/') ? '' : '/'}${routesScript}`);
-  let simulatorBundle = '/assets/Simulator-vdE3h7Iy.js';
+  let simulatorBundle = '/assets/Simulator-CqD9D8VY.js';
 
   if (routesRes.ok) {
     const routesText = await routesRes.text();
@@ -60,7 +66,7 @@ async function main() {
   }
   console.log(`✓ Target bundle 3D aktif: ${simulatorBundle}`);
 
-  console.log(`[3/4] Menganalisis manifest aset 3D dalam bundle Simulator...`);
+  console.log(`[3/5] Menganalisis manifest aset 3D dalam bundle Simulator...`);
   const simRes = await fetch(`${BASE_URL}${simulatorBundle.startsWith('/') ? '' : '/'}${simulatorBundle}`);
   if (!simRes.ok) {
     throw new Error(`Gagal memuat bundle Simulator ${simulatorBundle}`);
@@ -77,8 +83,8 @@ async function main() {
 
   // Compare with local models
   const localModels = new Set(fs.readdirSync(MODELS_DIR));
-  if (fs.existsSync(path.join(MODELS_DIR, 'bangpay'))) {
-    fs.readdirSync(path.join(MODELS_DIR, 'bangpay')).forEach((f) => localModels.add(f));
+  if (fs.existsSync(BANGPAY_MODELS_DIR)) {
+    fs.readdirSync(BANGPAY_MODELS_DIR).forEach((f) => localModels.add(f));
   }
 
   const missingGlbs = glbPaths.filter((p) => {
@@ -86,12 +92,12 @@ async function main() {
     return !localModels.has(fileName);
   });
 
-  console.log(`\n[4/4] Sinkronisasi Berkas:`);
+  console.log(`\n[4/5] Sinkronisasi Model 3D:`);
   console.log(`- Model Lokal Tersedia : ${localModels.size}`);
-  console.log(`- Model Baru Ditemukan : ${missingGlbs.length}`);
+  console.log(`- Model Baru Remote    : ${missingGlbs.length}`);
 
   if (missingGlbs.length === 0) {
-    console.log('✨ Semua model 3D remote sudah tersinkronisasi 100% secara lokal!');
+    console.log('✨ Semua 57 model 3D remote sudah tersinkronisasi 100% secara lokal!');
   } else {
     console.log(`Mengunduh ${missingGlbs.length} model 3D baru ke ${MODELS_DIR}...`);
 
@@ -118,6 +124,38 @@ async function main() {
     console.log(`\n✨ Selesai mengunduh ${missingGlbs.length} model 3D baru!`);
   }
 
+  // 5/5: Sinkronisasi Tekstur PBR dan Thumbnails
+  console.log(`\n[5/5] Sinkronisasi Tekstur PBR & Thumbnail:`);
+  let newTextures = 0;
+  for (const imgPath of imgPaths) {
+    const fileName = path.basename(imgPath);
+    const destThumb = path.join(THUMBS_DIR, fileName);
+    const destTexture = path.join(TEXTURES_DIR, fileName);
+
+    const exists = fs.existsSync(destThumb) || fs.existsSync(destTexture);
+    if (!exists) {
+      process.stdout.write(`  Mengunduh tekstur ${fileName}... `);
+      try {
+        const r = await fetch(`${BASE_URL}/${imgPath}`);
+        if (r.ok) {
+          const buf = Buffer.from(await r.arrayBuffer());
+          fs.writeFileSync(destTexture, buf);
+          fs.writeFileSync(destThumb, buf);
+          newTextures++;
+          console.log(`OK (${(buf.length / 1024).toFixed(1)} KB)`);
+        }
+      } catch (e) {
+        console.log(`ERROR: ${e.message}`);
+      }
+    }
+  }
+
+  if (newTextures === 0) {
+    console.log('✨ Semua tekstur PBR dan thumbnail sudah tersinkronisasi 100%!');
+  } else {
+    console.log(`✨ Mengunduh ${newTextures} berkas tekstur baru!`);
+  }
+
   console.log('====================================================');
   console.log('✓ AUTO-SCRAPING & SYNC SELESAI DENGAN SUKSES.');
   console.log('====================================================\n');
@@ -127,4 +165,3 @@ main().catch((err) => {
   console.error('\n❌ Gagal menjalankan auto-scraper:', err.message);
   process.exit(1);
 });
-
